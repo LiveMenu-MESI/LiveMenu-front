@@ -13,6 +13,11 @@ export const routes: Routes = [
           import('./features/restaurants/restaurants.component').then((m) => m.RestaurantsComponent),
       },
       {
+        path: 'restaurants/:restaurantId',
+        loadComponent: () =>
+          import('./features/restaurant-menu/restaurant-menu.component').then((m) => m.RestaurantMenuComponent),
+      },
+      {
         path: 'dashboard',
         loadComponent: () =>
           import('./features/restaurants/restaurants.component').then((m) => m.RestaurantsComponent),

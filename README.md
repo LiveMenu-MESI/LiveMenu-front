@@ -22,10 +22,28 @@ src/app/
 - Node.js 20+
 - npm
 
+## Variables de entorno (.env)
+
+Las variables se leen solo del archivo **`.env`** en la raíz. Antes de `npm start` y `npm run build` se ejecuta `scripts/load-env.js`, que genera `src/app/core/generated/config.ts` a partir de `.env`.
+
+1. Copia la plantilla: `cp .env.example .env`
+2. Edita `.env` con tus valores:
+
+```env
+# URL base del API (sin /api/v1)
+API_URL=https://api.naing.co
+
+# UUID de restaurante para el enlace "Acceso directo a menú (pruebas)" (opcional)
+# DEV_RESTAURANT_ID=550e8400-e29b-41d4-a716-446655440000
+```
+
+El archivo `.env` está en `.gitignore`; no se sube al repositorio.
+
 ## Desarrollo local
 
 ```bash
 npm install
+cp .env.example .env   # si aún no tienes .env
 npm start
 ```
 
@@ -49,13 +67,10 @@ La app se sirve en http://localhost:4200.
 
 ## API (Restaurant Management CU-02)
 
-El listado de restaurantes usa el backend según la colección Postman. El **host del API** es una variable de entorno:
+El listado de restaurantes usa el backend según la colección Postman. El **host del API** se configura en **`.env`** con `API_URL`. Si no existe `.env`, se usan los valores por defecto del script.
 
-- **Desarrollo:** por defecto `http://localhost:8080` en `src/environments/environment.ts`
-- **Producción:** se usa `src/environments/environment.prod.ts`; la URL se define con la variable **`API_URL`**
-  - Build local: `API_URL=https://api.ejemplo.com npm run build:prod`
-  - Docker: `docker build --build-arg API_URL=http://backend:8080 .` o en `docker-compose.yml` pasar `API_URL`
 - **Endpoints:** `GET/POST /api/v1/admin/restaurants`, `GET/PUT/DELETE /api/v1/admin/restaurants/:id`
+- **Docker:** puedes pasar `API_URL` como build-arg o crear un `.env` antes del build
 
 Todas las peticiones llevan `Authorization: Bearer <token>`. Para probar:
 

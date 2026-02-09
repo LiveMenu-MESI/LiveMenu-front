@@ -1,0 +1,29 @@
+<div class="category-card">
+  <div class="category-card__header" (click)="toggleExpanded()">
+    <span class="category-card__caret" [class.category-card__caret--open]="expanded()">{{ expanded() ? '▲' : '▼' }}</span>
+    <span class="category-card__icon" [innerHTML]="folderIcon"></span>
+    <div class="category-card__title-block">
+      <h3 class="category-card__title">{{ category().name }}</h3>
+      @if (category().description) {
+        <p class="category-card__description">{{ category().description }}</p>
+      }
+    </div>
+    <span class="category-card__count category-card__count--pill">{{ dishCount() }} platillo{{ dishCount() !== 1 ? 's' : '' }}</span>
+    <div class="category-card__actions" (click)="$event.stopPropagation()">
+      <button type="button" class="category-card__btn category-card__btn--edit" (click)="edit.emit()">Editar</button>
+      <button type="button" class="category-card__btn category-card__btn--delete" (click)="delete.emit()" aria-label="Eliminar categoría" title="Eliminar">
+        <svg class="category-card__trash-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polyline points="3 6 5 6 21 6"></polyline>
+          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+  @if (expanded()) {
+    <div class="category-card__body">
+      @if (dishCount() === 0) {
+        <p class="category-card__empty">No hay platillos en esta categoría</p>
+      }
+    </div>
+  }
+</div>

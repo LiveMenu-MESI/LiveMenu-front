@@ -3,9 +3,11 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
+    "prestart": "node scripts/load-env.js",
     "start": "ng serve",
+    "prebuild": "node scripts/load-env.js",
     "build": "ng build",
-    "build:prod": "node scripts/set-env.js && ng build",
+    "build:prod": "node scripts/load-env.js production && ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },

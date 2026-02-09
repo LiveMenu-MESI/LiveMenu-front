@@ -1,4 +1,5 @@
 import { Component, input, output } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import type { Restaurant } from '../../models/restaurant.model';
 
 const BUILDING_ICON =
@@ -7,7 +8,7 @@ const BUILDING_ICON =
 @Component({
   selector: 'app-restaurant-card',
   standalone: true,
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './restaurant-card.component.html',
   styleUrl: './restaurant-card.component.scss',
 })
