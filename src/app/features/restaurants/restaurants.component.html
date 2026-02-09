@@ -1,0 +1,46 @@
+<div class="restaurants-page">
+  <app-page-header
+    title="Mis Restaurantes"
+    subtitle="Administra tus restaurantes y menús"
+  />
+
+  @if (error()) {
+    <div class="restaurants-page__error">{{ error() }}</div>
+  }
+
+  <div class="restaurants-page__actions">
+    <button type="button" class="restaurants-page__btn-new" (click)="openCreateModal()">
+      <span class="restaurants-page__btn-icon">+</span>
+      Nuevo Restaurante
+    </button>
+  </div>
+
+  @if (loading()) {
+    <p class="restaurants-page__loading">Cargando...</p>
+  } @else if (restaurants().length === 0) {
+    <app-empty-state
+      title="No tienes restaurantes"
+      description="Crea tu primer restaurante para empezar a gestionar tus menús digitales"
+      buttonLabel="Crear Nuevo Restaurante"
+      (buttonClick)="openCreateModal()"
+    />
+  } @else {
+    <div class="restaurants-page__grid">
+      @for (restaurant of restaurants(); track restaurant.id) {
+        <app-restaurant-card
+          [restaurant]="restaurant"
+          (edit)="openEditModal(restaurant)"
+          (delete)="onDeleteRestaurant(restaurant)"
+        />
+      }
+    </div>
+  }
+
+  @if (showCreateModal()) {
+    <app-restaurant-form-modal
+      [restaurant]="editingRestaurant()"
+      (saved)="onRestaurantSaved($event)"
+      (cancelled)="closeCreateModal()"
+    />
+  }
+</div>

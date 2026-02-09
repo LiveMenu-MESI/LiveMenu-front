@@ -1,13 +1,17 @@
 # Stage 1: Build
 FROM node:20-alpine AS build
 
+# Variable de entorno para la URL del API (ej: http://backend:8080)
+ARG API_URL=http://localhost:8080
+ENV API_URL=${API_URL}
+
 WORKDIR /app
 
 COPY package.json package-lock.json ./
 RUN npm ci
 
 COPY . .
-RUN npm run build
+RUN npm run build:prod
 
 # Stage 2: Serve con nginx
 FROM nginx:alpine

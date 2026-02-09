@@ -1,0 +1,14 @@
+<div class="modal-backdrop" (click)="onBackdropClick()">
+  <div class="modal-panel" (click)="$event.stopPropagation()" role="dialog" aria-modal="true" [attr.aria-labelledby]="'modal-title'">
+    <div class="modal-panel__header">
+      <h2 class="modal-panel__title" id="modal-title">{{ title() }}</h2>
+      @if (subtitle()) {
+        <p class="modal-panel__subtitle">{{ subtitle() }}</p>
+      }
+      <button type="button" class="modal-panel__close" aria-label="Cerrar" (click)="onCloseClick()">&times;</button>
+    </div>
+    <div class="modal-panel__body">
+      <ng-content />
+    </div>
+  </div>
+</div>

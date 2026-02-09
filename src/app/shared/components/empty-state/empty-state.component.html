@@ -1,0 +1,13 @@
+<div class="empty-state">
+  <div class="empty-state__icon" [innerHTML]="iconSvg"></div>
+  <h2 class="empty-state__title">{{ title() }}</h2>
+  @if (description()) {
+    <p class="empty-state__description">{{ description() }}</p>
+  }
+  @if (buttonLabel()) {
+    <button type="button" class="empty-state__button" (click)="buttonClick.emit()">
+      <span class="empty-state__button-icon">+</span>
+      {{ buttonLabel() }}
+    </button>
+  }
+</div>

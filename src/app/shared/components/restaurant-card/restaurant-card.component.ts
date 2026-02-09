@@ -1,0 +1,19 @@
+import { Component, input, output } from '@angular/core';
+import type { Restaurant } from '../../models/restaurant.model';
+
+const BUILDING_ICON =
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#6ea8fe" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-4h6v4"/><path d="M9 17h6"/></svg>';
+
+@Component({
+  selector: 'app-restaurant-card',
+  standalone: true,
+  imports: [],
+  templateUrl: './restaurant-card.component.html',
+  styleUrl: './restaurant-card.component.scss',
+})
+export class RestaurantCardComponent {
+  restaurant = input.required<Restaurant>();
+  edit = output<void>();
+  delete = output<void>();
+  buildingIcon = BUILDING_ICON;
+}

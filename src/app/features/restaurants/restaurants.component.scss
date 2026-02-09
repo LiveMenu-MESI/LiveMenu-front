@@ -1,0 +1,51 @@
+.restaurants-page {
+  padding: 2rem;
+
+  &__error {
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+    background: #f8d7da;
+    color: #721c24;
+    border-radius: 6px;
+    font-size: 0.9375rem;
+  }
+
+  &__loading {
+    color: #6c757d;
+    margin: 0;
+  }
+
+  &__actions {
+    margin-bottom: 1.5rem;
+  }
+
+  &__btn-new {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1.25rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: #fff;
+    background: #0d6efd;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s;
+
+    &:hover {
+      background: #0b5ed7;
+    }
+  }
+
+  &__btn-icon {
+    font-size: 1.125rem;
+    font-weight: 600;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1.25rem;
+  }
+}

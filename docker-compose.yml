@@ -1,13 +1,13 @@
 services:
   frontend:
-    build: .
+    build:
+      context: .
+      args:
+        # Variable de entorno para la URL del API en tiempo de build
+        API_URL: ${API_URL:-http://localhost:8080}
     ports:
       - "4200:80"
-    # Para conectar con un backend en otro servicio:
-    # environment:
-    #   - API_BASE_URL=http://backend:3000/api
-    # depends_on:
-    #   - backend
+    # Para construir con otra URL de API: API_URL=http://backend:8080 docker compose up --build
 
   # Ejemplo de backend (descomentar y crear Dockerfile en backend si aplica):
   # backend:
