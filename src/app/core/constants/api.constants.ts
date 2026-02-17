@@ -12,6 +12,8 @@ export const API_CONSTANTS = {
   ENDPOINTS: {
     AUTH_LOGIN: '/auth/login',
     AUTH_REGISTER: '/auth/register',
+    AUTH_REFRESH: '/auth/refresh',
+    AUTH_LOGOUT: '/auth/logout',
     AUTH_USER: '/auth/user',
     RESTAURANTS: '/admin/restaurants',
     restaurantById: (id: string) => `/admin/restaurants/${id}`,

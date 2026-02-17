@@ -1,0 +1,91 @@
+<div class="login-container">
+  <div class="login-wrapper">
+    <div class="login-header">
+      <div class="login-logo">
+        <span class="login-logo__icon" [innerHTML]="logoIcon"></span>
+      </div>
+      <h1 class="login-header__title">Live Menu</h1>
+      <p class="login-header__subtitle">Inicia sesión para gestionar tus menús</p>
+    </div>
+
+    <div class="login-card">
+      <form (ngSubmit)="onSubmit()" [formGroup]="form" class="login-form">
+        <div class="form-field">
+          <label for="email" class="form-field__label">Correo Electrónico</label>
+          <div class="form-field__input-wrapper">
+            <span class="form-field__icon" [innerHTML]="emailIcon"></span>
+            <input
+              id="email"
+              type="email"
+              formControlName="email"
+              class="form-field__input"
+              placeholder="tu@email.com"
+              [class.form-field__input--error]="emailControl?.invalid && emailControl?.touched"
+            />
+          </div>
+          @if (emailControl?.hasError('required') && emailControl?.touched) {
+            <span class="form-field__error">El correo es requerido</span>
+          }
+          @if (emailControl?.hasError('email') && emailControl?.touched) {
+            <span class="form-field__error">Correo electrónico inválido</span>
+          }
+        </div>
+
+        <div class="form-field">
+          <label for="password" class="form-field__label">Contraseña</label>
+          <div class="form-field__input-wrapper">
+            <span class="form-field__icon" [innerHTML]="lockIcon"></span>
+            <input
+              id="password"
+              type="password"
+              formControlName="password"
+              class="form-field__input"
+              placeholder="••••••••"
+              [class.form-field__input--error]="passwordControl?.invalid && passwordControl?.touched"
+            />
+          </div>
+          @if (passwordControl?.hasError('required') && passwordControl?.touched) {
+            <span class="form-field__error">La contraseña es requerida</span>
+          }
+          @if (passwordControl?.hasError('minlength') && passwordControl?.touched) {
+            <span class="form-field__error">La contraseña debe tener al menos 6 caracteres</span>
+          }
+        </div>
+
+        <a routerLink="/forgot-password" class="login-form__forgot-link">¿Olvidaste tu contraseña?</a>
+
+        @if (errorMessage) {
+          <div class="form-error">
+            {{ errorMessage }}
+          </div>
+        }
+
+        <button
+          type="submit"
+          class="login-form__submit"
+          [disabled]="isLoading || form.invalid"
+        >
+          <span class="login-form__submit-icon" [innerHTML]="arrowIcon"></span>
+          <span>Iniciar Sesión</span>
+        </button>
+      </form>
+
+      <div class="login-card__divider">
+        <span class="login-card__divider-text">¿No tienes cuenta?</span>
+      </div>
+
+      <button
+        type="button"
+        class="login-card__signup-button"
+        routerLink="/signup"
+      >
+        Crear Cuenta Nueva
+      </button>
+    </div>
+
+    <p class="login-footer">
+      Al continuar, aceptas nuestros Términos de Servicio y Política de Privacidad
+    </p>
+  </div>
+</div>
+
