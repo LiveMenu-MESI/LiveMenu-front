@@ -1,0 +1,72 @@
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 40vh;
+  padding: 1.5rem;
+
+  @media (min-width: 769px) {
+    min-height: 50vh;
+    padding: 2rem;
+  }
+  text-align: center;
+
+  &__icon {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 1.5rem;
+
+    ::ng-deep svg {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  &__title {
+    margin: 0 0 0.5rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #212529;
+
+    @media (min-width: 480px) {
+      font-size: 1.25rem;
+    }
+  }
+
+  &__description {
+    margin: 0 0 1.5rem;
+    font-size: 0.875rem;
+    color: #6c757d;
+    max-width: 360px;
+    line-height: 1.5;
+
+    @media (min-width: 480px) {
+      font-size: 0.9375rem;
+    }
+  }
+
+  &__button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1.25rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: #fff;
+    background: #0d6efd;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s;
+
+    &:hover {
+      background: #0b5ed7;
+    }
+  }
+
+  &__button-icon {
+    font-size: 1.125rem;
+    font-weight: 600;
+  }
+}

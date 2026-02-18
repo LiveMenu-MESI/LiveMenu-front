@@ -1,0 +1,34 @@
+@if (link()) {
+  <a
+    [routerLink]="link()"
+    routerLinkActive="sidebar-nav-item--active"
+    [routerLinkActiveOptions]="{ exact: exact() }"
+    class="sidebar-nav-item"
+  >
+    <span class="sidebar-nav-item__icon" [innerHTML]="iconSvg"></span>
+    <span class="sidebar-nav-item__label">{{ label() }}</span>
+    @if (showPlus()) {
+      <span class="sidebar-nav-item__plus">+</span>
+    }
+    @if (showArrow()) {
+      <span class="sidebar-nav-item__arrow">▼</span>
+    }
+    @if (badge() !== null && badge() !== undefined) {
+      <span class="sidebar-nav-item__badge">{{ badge() }}</span>
+    }
+  </a>
+} @else {
+  <span class="sidebar-nav-item sidebar-nav-item--no-link">
+    <span class="sidebar-nav-item__icon" [innerHTML]="iconSvg"></span>
+    <span class="sidebar-nav-item__label">{{ label() }}</span>
+    @if (showPlus()) {
+      <span class="sidebar-nav-item__plus">+</span>
+    }
+    @if (showArrow()) {
+      <span class="sidebar-nav-item__arrow">▼</span>
+    }
+    @if (badge() !== null && badge() !== undefined) {
+      <span class="sidebar-nav-item__badge">{{ badge() }}</span>
+    }
+  </span>
+}

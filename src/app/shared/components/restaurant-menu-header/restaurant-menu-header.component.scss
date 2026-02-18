@@ -1,0 +1,43 @@
+.restaurant-menu-header {
+  flex: 1;
+  min-width: 0;
+
+  &__info {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.75rem;
+    margin-bottom: 0.25rem;
+  }
+
+  &__name {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #212529;
+
+    @media (min-width: 480px) {
+      font-size: 1.5rem;
+    }
+  }
+
+  &__profile-link {
+    font-size: 0.875rem;
+    color: #0d6efd;
+    text-decoration: none;
+
+    @media (min-width: 480px) {
+      font-size: 0.9375rem;
+    }
+  }
+
+  &__description {
+    margin: 0;
+    font-size: 0.875rem;
+    color: #6c757d;
+
+    @media (min-width: 480px) {
+      font-size: 0.9375rem;
+    }
+  }
+}

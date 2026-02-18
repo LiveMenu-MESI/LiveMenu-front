@@ -1,0 +1,11 @@
+<div class="opening-hours">
+  @for (day of days; track day) {
+    <div class="opening-hours__row">
+      <span class="opening-hours__day">{{ day }}</span>
+      <span class="opening-hours__closed">Cerrado</span>
+      <span class="opening-hours__sep">-</span>
+      <input type="text" class="opening-hours__input" placeholder="--:--" readonly />
+      <input type="text" class="opening-hours__input" placeholder="--:--" readonly />
+    </div>
+  }
+</div>

@@ -1,0 +1,21 @@
+<app-modal
+  [title]="isEdit ? 'Editar categoría' : 'Nueva categoría'"
+  subtitle="Nombre y descripción de la categoría"
+  (closed)="onCancel()"
+>
+  <form (ngSubmit)="onSubmit()" [formGroup]="form">
+    <div class="category-form-modal__field">
+      <label class="category-form-modal__label">Nombre *</label>
+      <input type="text" formControlName="name" class="category-form-modal__input" />
+      <span class="category-form-modal__hint">Máximo 50 caracteres</span>
+    </div>
+    <div class="category-form-modal__field">
+      <label class="category-form-modal__label">Descripción</label>
+      <textarea formControlName="description" class="category-form-modal__input category-form-modal__textarea" rows="2"></textarea>
+    </div>
+    <div class="category-form-modal__actions">
+      <button type="button" class="category-form-modal__btn category-form-modal__btn--secondary" (click)="onCancel()">Cancelar</button>
+      <button type="submit" class="category-form-modal__btn category-form-modal__btn--primary">Guardar</button>
+    </div>
+  </form>
+</app-modal>

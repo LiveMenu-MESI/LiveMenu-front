@@ -1,0 +1,136 @@
+<div class="signup-container">
+  <div class="signup-wrapper">
+    <div class="signup-header">
+      <div class="signup-logo">
+        <span class="signup-logo__icon" [innerHTML]="logoIcon"></span>
+      </div>
+      <h1 class="signup-header__title">Crear Cuenta</h1>
+      <p class="signup-header__subtitle">Comienza a gestionar tus menús digitales</p>
+    </div>
+
+    <div class="signup-card">
+      <form (ngSubmit)="onSubmit()" [formGroup]="form" class="signup-form">
+        <div class="form-field">
+          <label for="name" class="form-field__label">Nombre Completo</label>
+          <div class="form-field__input-wrapper">
+            <span class="form-field__icon" [innerHTML]="userIcon"></span>
+            <input
+              id="name"
+              type="text"
+              formControlName="name"
+              class="form-field__input"
+              placeholder="Tu nombre"
+              [class.form-field__input--error]="nameControl?.invalid && nameControl?.touched"
+            />
+          </div>
+          @if (nameControl?.hasError('required') && nameControl?.touched) {
+            <span class="form-field__error">El nombre es requerido</span>
+          }
+          @if (nameControl?.hasError('minlength') && nameControl?.touched) {
+            <span class="form-field__error">El nombre debe tener al menos 2 caracteres</span>
+          }
+        </div>
+
+        <div class="form-field">
+          <label for="email" class="form-field__label">Correo Electrónico</label>
+          <div class="form-field__input-wrapper">
+            <span class="form-field__icon" [innerHTML]="emailIcon"></span>
+            <input
+              id="email"
+              type="email"
+              formControlName="email"
+              class="form-field__input"
+              placeholder="tu@email.com"
+              [class.form-field__input--error]="emailControl?.invalid && emailControl?.touched"
+            />
+          </div>
+          @if (emailControl?.hasError('required') && emailControl?.touched) {
+            <span class="form-field__error">El correo es requerido</span>
+          }
+          @if (emailControl?.hasError('email') && emailControl?.touched) {
+            <span class="form-field__error">Correo electrónico inválido</span>
+          }
+        </div>
+
+        <div class="form-field">
+          <label for="password" class="form-field__label">Contraseña</label>
+          <div class="form-field__input-wrapper">
+            <span class="form-field__icon" [innerHTML]="lockIcon"></span>
+            <input
+              id="password"
+              type="password"
+              formControlName="password"
+              class="form-field__input"
+              placeholder="Mínimo 6 caracteres"
+              [class.form-field__input--error]="passwordControl?.invalid && passwordControl?.touched"
+            />
+          </div>
+          @if (passwordControl?.hasError('required') && passwordControl?.touched) {
+            <span class="form-field__error">La contraseña es requerida</span>
+          }
+          @if (passwordControl?.hasError('minlength') && passwordControl?.touched) {
+            <span class="form-field__error">La contraseña debe tener al menos 6 caracteres</span>
+          }
+        </div>
+
+        <div class="form-field">
+          <label for="confirmPassword" class="form-field__label">Confirmar Contraseña</label>
+          <div class="form-field__input-wrapper">
+            <span class="form-field__icon" [innerHTML]="lockIcon"></span>
+            <input
+              id="confirmPassword"
+              type="password"
+              formControlName="confirmPassword"
+              class="form-field__input"
+              placeholder="Confirma tu contraseña"
+              [class.form-field__input--error]="(confirmPasswordControl?.invalid || passwordMismatch) && confirmPasswordControl?.touched"
+            />
+          </div>
+          @if (confirmPasswordControl?.hasError('required') && confirmPasswordControl?.touched) {
+            <span class="form-field__error">Confirma tu contraseña</span>
+          }
+          @if (passwordMismatch) {
+            <span class="form-field__error">Las contraseñas no coinciden</span>
+          }
+        </div>
+
+        @if (errorMessage) {
+          <div class="form-error">
+            {{ errorMessage }}
+          </div>
+        }
+
+        <div class="signup-form__terms">
+          <p class="signup-form__terms-text">
+            Al crear una cuenta, aceptas nuestros
+            <a href="#" class="signup-form__terms-link">Términos de Servicio</a>
+            y
+            <a href="#" class="signup-form__terms-link">Política de Privacidad</a>
+          </p>
+        </div>
+
+        <button
+          type="submit"
+          class="signup-form__submit"
+          [disabled]="isLoading || form.invalid"
+        >
+          <span class="signup-form__submit-icon" [innerHTML]="arrowIcon"></span>
+          <span>Crear Cuenta</span>
+        </button>
+      </form>
+
+      <div class="signup-card__divider">
+        <span class="signup-card__divider-text">¿Ya tienes cuenta?</span>
+      </div>
+
+      <button
+        type="button"
+        class="signup-card__login-button"
+        routerLink="/login"
+      >
+        Iniciar Sesión
+      </button>
+    </div>
+  </div>
+</div>
+
