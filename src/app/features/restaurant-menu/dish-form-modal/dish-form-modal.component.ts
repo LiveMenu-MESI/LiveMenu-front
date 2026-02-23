@@ -1,6 +1,7 @@
-import { Component, input, output, OnInit } from '@angular/core';
+import { Component, input, output, OnInit, inject, signal } from '@angular/core';
 import { ReactiveFormsModule, FormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { ModalComponent } from '../../../shared/components/modal/modal.component';
+import { ImageUploadService } from '../../../core/services/image-upload.service';
 import type { DishResponseDto } from '../../../core/models/dish-api.model';
 import type { CategoryResponseDto } from '../../../core/models/category-api.model';
 
@@ -25,6 +26,8 @@ const UPLOAD_ICON =
   styleUrl: './dish-form-modal.component.scss',
 })
 export class DishFormModalComponent implements OnInit {
+  private readonly imageUploadService = inject(ImageUploadService);
+
   /** Categorías del restaurante para el select */
   categories = input.required<CategoryResponseDto[]>();
   /** Si se pasa, modo edición; si no, crear */
@@ -38,6 +41,8 @@ export class DishFormModalComponent implements OnInit {
   form: FormGroup;
   tagsList: string[] = [];
   tagInput = '';
+  uploading = signal(false);
+  uploadError = signal<string | null>(null);
 
   readonly cutleryIcon = CUTLERY_ICON;
   readonly uploadIcon = UPLOAD_ICON;
@@ -129,5 +134,39 @@ export class DishFormModalComponent implements OnInit {
 
   onCancel(): void {
     this.cancelled.emit();
+  }
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+
+    // Validar tipo de archivo
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+    if (!validTypes.includes(file.type)) {
+      this.uploadError.set('Formato no válido. Use JPEG, PNG o WebP.');
+      return;
+    }
+
+    // Validar tamaño (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      this.uploadError.set('El archivo es demasiado grande. Máximo 5MB.');
+      return;
+    }
+
+    this.uploading.set(true);
+    this.uploadError.set(null);
+
+    this.imageUploadService.uploadImage(file).subscribe({
+      next: (response) => {
+        // Usar la URL large como imagen del plato
+        this.form.patchValue({ imageUrl: response.largeUrl });
+        this.uploading.set(false);
+      },
+      error: (err) => {
+        this.uploadError.set(err.error?.message || 'Error al subir la imagen');
+        this.uploading.set(false);
+      },
+    });
   }
 }

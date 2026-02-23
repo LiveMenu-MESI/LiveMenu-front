@@ -6,19 +6,40 @@
     @if (!control() || !logoUrl || logoImageError()) {
       <span class="logo-upload__icon" [innerHTML]="buildingIcon"></span>
     }
+    @if (uploading()) {
+      <div class="logo-upload__uploading">Subiendo...</div>
+    }
   </div>
   <div class="logo-upload__actions">
     @if (control(); as ctrl) {
-      <input
-        type="url"
-        [value]="ctrl.value"
-        (input)="logoImageError.set(false); ctrl.setValue($any($event.target).value)"
-        class="logo-upload__input"
-        placeholder="https://ejemplo.com/logo.png"
-      />
-      <p class="logo-upload__hint">Indica la URL del logo o sube la imagen a un servicio y pega el enlace. Recomendado: 512×512px</p>
+      <div class="logo-upload__upload-section">
+        <label class="logo-upload__file-label">
+          <span class="logo-upload__file-icon" [innerHTML]="uploadIcon"></span>
+          <span>Subir Imagen</span>
+          <input
+            type="file"
+            accept="image/jpeg,image/jpg,image/png,image/webp"
+            (change)="onFileSelected($event)"
+            class="logo-upload__file-input"
+            [disabled]="uploading()"
+          />
+        </label>
+        <span class="logo-upload__divider">o</span>
+        <input
+          type="url"
+          [value]="ctrl.value"
+          (input)="logoImageError.set(false); uploadError.set(null); ctrl.setValue($any($event.target).value)"
+          class="logo-upload__input"
+          placeholder="https://ejemplo.com/logo.png"
+          [disabled]="uploading()"
+        />
+      </div>
+      @if (uploadError()) {
+        <p class="logo-upload__error">{{ uploadError() }}</p>
+      }
+      <p class="logo-upload__hint">Formato: JPG, PNG, WebP. Máximo 5MB. Recomendado: 512×512px</p>
     } @else {
-      <p class="logo-upload__hint">Formato: JPG, PNG. Tamaño recomendado: 512×512px</p>
+      <p class="logo-upload__hint">Formato: JPG, PNG, WebP. Tamaño recomendado: 512×512px</p>
     }
   </div>
 </div>

@@ -10,14 +10,34 @@
         } @else {
           <span class="dish-form__image-icon" [innerHTML]="cutleryIcon"></span>
         }
+        @if (uploading()) {
+          <div class="dish-form__image-uploading">Subiendo...</div>
+        }
       </div>
       <div class="dish-form__image-actions">
-        <button type="button" class="dish-form__btn-upload">
+        <label class="dish-form__btn-upload" [class.dish-form__btn-upload--disabled]="uploading()">
           <span class="dish-form__btn-upload-icon" [innerHTML]="uploadIcon"></span>
           Subir Imagen
-        </button>
-        <p class="dish-form__hint">Formato: JPG, PNG. Tamaño recomendado: 800×600px</p>
-        <input type="url" formControlName="imageUrl" class="dish-form__input dish-form__image-url" placeholder="O pega la URL de la imagen" />
+          <input
+            type="file"
+            accept="image/jpeg,image/jpg,image/png,image/webp"
+            (change)="onFileSelected($event)"
+            class="dish-form__file-input"
+            [disabled]="uploading()"
+          />
+        </label>
+        @if (uploadError()) {
+          <p class="dish-form__error">{{ uploadError() }}</p>
+        }
+        <p class="dish-form__hint">Formato: JPG, PNG, WebP. Máximo 5MB. Recomendado: 800×600px</p>
+        <span class="dish-form__divider">o</span>
+        <input
+          type="url"
+          formControlName="imageUrl"
+          class="dish-form__input dish-form__image-url"
+          placeholder="Pega la URL de la imagen"
+          [disabled]="uploading()"
+        />
       </div>
     </div>
 
