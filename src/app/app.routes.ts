@@ -24,6 +24,11 @@ export const routes: Routes = [
       import('./features/auth/logout/logout.component').then((m) => m.LogoutComponent),
   },
   {
+    path: 'm/:slug',
+    loadComponent: () =>
+      import('./features/public-menu/public-menu.component').then((m) => m.PublicMenuComponent),
+  },
+  {
     path: '',
     component: MainLayoutComponent,
     canActivate: [authGuard],

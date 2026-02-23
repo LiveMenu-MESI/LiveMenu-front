@@ -1,0 +1,64 @@
+<div class="qr-display">
+  @if (loading()) {
+    <div class="qr-display__loading">
+      <p>Cargando QR...</p>
+    </div>
+  } @else if (error()) {
+    <div class="qr-display__error">
+      <p>{{ error() }}</p>
+    </div>
+  } @else if (qrInfo()) {
+    <div class="qr-display__content">
+      <div class="qr-display__info">
+        <h3 class="qr-display__title">Código QR del Menú</h3>
+        <p class="qr-display__description">
+          Escanea este código para acceder al menú público de <strong>{{ qrInfo()!.restaurantName }}</strong>
+        </p>
+        <div class="qr-display__url">
+          <label>URL del menú:</label>
+          <code class="qr-display__url-text">{{ qrInfo()!.publicMenuUrl }}</code>
+        </div>
+      </div>
+
+      <div class="qr-display__preview">
+        @if (qrImageUrl()) {
+          <img [src]="qrImageUrl()!" alt="QR Code" class="qr-display__image" />
+        }
+      </div>
+
+      <div class="qr-display__options">
+        <div class="qr-display__option">
+          <label for="qr-size">Tamaño:</label>
+          <select id="qr-size" [value]="selectedSize" (change)="onSizeChange($any($event.target).value)">
+            <option value="S">S (200x200)</option>
+            <option value="M">M (400x400)</option>
+            <option value="L">L (800x800)</option>
+            <option value="XL">XL (1200x1200)</option>
+          </select>
+        </div>
+
+        <div class="qr-display__option">
+          <label for="qr-format">Formato:</label>
+          <select id="qr-format" [value]="selectedFormat" (change)="onFormatChange($any($event.target).value)">
+            <option value="PNG">PNG</option>
+            <option value="SVG">SVG</option>
+          </select>
+        </div>
+
+        <div class="qr-display__option">
+          <label>
+            <input type="checkbox" [checked]="includeLogo" (change)="onLogoToggle($any($event.target).checked)" />
+            Incluir logo
+          </label>
+        </div>
+      </div>
+
+      <div class="qr-display__actions">
+        <button type="button" class="qr-display__btn qr-display__btn--primary" (click)="downloadQr()">
+          Descargar QR
+        </button>
+      </div>
+    </div>
+  }
+</div>
+

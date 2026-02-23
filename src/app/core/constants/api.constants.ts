@@ -74,3 +74,50 @@ export function getDishWithImageUrl(restaurantId: string, dishId: string): strin
 export function getDishAvailabilityUrl(restaurantId: string, dishId: string): string {
   return `${getDishByIdUrl(restaurantId, dishId)}/availability`;
 }
+
+/** Reordenar categorías: PATCH .../restaurants/:restaurantId/categories/reorder */
+export function getCategoriesReorderUrl(restaurantId: string): string {
+  return `${getCategoriesUrl(restaurantId)}/reorder`;
+}
+
+/** Upload de imagen: POST /api/v1/images/upload */
+export function getImageUploadUrl(): string {
+  return `${BASE_URL}${API_CONSTANTS.API_PREFIX}/images/upload`;
+}
+
+/** Eliminar imagen: DELETE /api/v1/images/:filename */
+export function getImageDeleteUrl(filename: string): string {
+  return `${BASE_URL}${API_CONSTANTS.API_PREFIX}/images/${filename}`;
+}
+
+/** Menú público: GET /api/v1/public/menu/:slug */
+export function getPublicMenuUrl(slug: string): string {
+  return `${BASE_URL}${API_CONSTANTS.API_PREFIX}/public/menu/${slug}`;
+}
+
+/** Info de QR: GET /api/v1/admin/restaurants/:restaurantId/qr */
+export function getQrInfoUrl(restaurantId: string): string {
+  return `${BASE_URL}${API_CONSTANTS.API_PREFIX}${API_CONSTANTS.ENDPOINTS.restaurantById(restaurantId)}/qr`;
+}
+
+/** Descargar QR: GET /api/v1/admin/restaurants/:restaurantId/qr/download */
+export function getQrDownloadUrl(
+  restaurantId: string,
+  options?: { size?: 'S' | 'M' | 'L' | 'XL'; format?: 'PNG' | 'SVG'; includeLogo?: boolean }
+): string {
+  const base = `${getQrInfoUrl(restaurantId)}/download`;
+  if (!options) return base;
+  
+  const params = new URLSearchParams();
+  if (options.size) params.set('size', options.size);
+  if (options.format) params.set('format', options.format);
+  if (options.includeLogo !== undefined) params.set('includeLogo', String(options.includeLogo));
+  
+  const query = params.toString();
+  return query ? `${base}?${query}` : base;
+}
+
+/** Usuario actual: GET /api/v1/auth/user */
+export function getCurrentUserUrl(): string {
+  return `${BASE_URL}${API_CONSTANTS.API_PREFIX}${API_CONSTANTS.ENDPOINTS.AUTH_USER}`;
+}
