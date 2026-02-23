@@ -43,6 +43,7 @@ export class DishFormModalComponent implements OnInit {
   tagInput = '';
   uploading = signal(false);
   uploadError = signal<string | null>(null);
+  deleting = signal(false);
 
   readonly cutleryIcon = CUTLERY_ICON;
   readonly uploadIcon = UPLOAD_ICON;
@@ -166,6 +167,48 @@ export class DishFormModalComponent implements OnInit {
       error: (err) => {
         this.uploadError.set(err.error?.message || 'Error al subir la imagen');
         this.uploading.set(false);
+      },
+    });
+  }
+
+  /**
+   * Extrae el filename de una URL de imagen.
+   */
+  private extractFilename(url: string): string | null {
+    try {
+      const urlObj = new URL(url);
+      const pathname = urlObj.pathname;
+      const parts = pathname.split('/');
+      return parts[parts.length - 1] || null;
+    } catch {
+      const parts = url.split('/');
+      return parts[parts.length - 1] || null;
+    }
+  }
+
+  onDeleteImage(): void {
+    const imageUrl = this.form.get('imageUrl')?.value;
+    if (!imageUrl) return;
+
+    const filename = this.extractFilename(imageUrl);
+    if (!filename) {
+      this.uploadError.set('No se pudo extraer el nombre del archivo');
+      return;
+    }
+
+    if (!confirm('¿Eliminar esta imagen?')) return;
+
+    this.deleting.set(true);
+    this.uploadError.set(null);
+
+    this.imageUploadService.deleteImage(filename).subscribe({
+      next: () => {
+        this.form.patchValue({ imageUrl: null });
+        this.deleting.set(false);
+      },
+      error: (err) => {
+        this.uploadError.set(err.error?.message || 'Error al eliminar la imagen');
+        this.deleting.set(false);
       },
     });
   }

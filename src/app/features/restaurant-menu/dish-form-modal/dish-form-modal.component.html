@@ -7,11 +7,19 @@
       <div class="dish-form__image-preview">
         @if (form.get('imageUrl')?.value) {
           <img [src]="form.get('imageUrl')?.value" alt="" class="dish-form__image-img" />
+          @if (!deleting()) {
+            <button type="button" class="dish-form__image-delete" (click)="onDeleteImage()" aria-label="Eliminar imagen">
+              ×
+            </button>
+          }
         } @else {
           <span class="dish-form__image-icon" [innerHTML]="cutleryIcon"></span>
         }
         @if (uploading()) {
           <div class="dish-form__image-uploading">Subiendo...</div>
+        }
+        @if (deleting()) {
+          <div class="dish-form__image-uploading">Eliminando...</div>
         }
       </div>
       <div class="dish-form__image-actions">

@@ -2,12 +2,20 @@
   <div class="logo-upload__preview">
     @if (control() && logoUrl && !logoImageError()) {
       <img [src]="logoUrl" alt="Logo" class="logo-upload__img" (error)="onLogoImageError()" />
+      @if (!deleting()) {
+        <button type="button" class="logo-upload__delete" (click)="onDeleteImage()" aria-label="Eliminar imagen">
+          ×
+        </button>
+      }
     }
     @if (!control() || !logoUrl || logoImageError()) {
       <span class="logo-upload__icon" [innerHTML]="buildingIcon"></span>
     }
     @if (uploading()) {
       <div class="logo-upload__uploading">Subiendo...</div>
+    }
+    @if (deleting()) {
+      <div class="logo-upload__uploading">Eliminando...</div>
     }
   </div>
   <div class="logo-upload__actions">

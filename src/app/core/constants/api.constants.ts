@@ -121,3 +121,24 @@ export function getQrDownloadUrl(
 export function getCurrentUserUrl(): string {
   return `${BASE_URL}${API_CONSTANTS.API_PREFIX}${API_CONSTANTS.ENDPOINTS.AUTH_USER}`;
 }
+
+/** Analytics: GET /api/v1/admin/restaurants/:restaurantId/analytics */
+export function getAnalyticsUrl(restaurantId: string): string {
+  return `${BASE_URL}${API_CONSTANTS.API_PREFIX}${API_CONSTANTS.ENDPOINTS.restaurantById(restaurantId)}/analytics`;
+}
+
+/** Exportar Analytics: GET /api/v1/admin/restaurants/:restaurantId/analytics/export */
+export function getAnalyticsExportUrl(
+  restaurantId: string,
+  options?: { startDate?: string; endDate?: string }
+): string {
+  const base = `${getAnalyticsUrl(restaurantId)}/export`;
+  if (!options) return base;
+  
+  const params = new URLSearchParams();
+  if (options.startDate) params.set('startDate', options.startDate);
+  if (options.endDate) params.set('endDate', options.endDate);
+  
+  const query = params.toString();
+  return query ? `${base}?${query}` : base;
+}

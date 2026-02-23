@@ -27,10 +27,28 @@ export class LogoUploadComponent {
   logoImageError = signal(false);
   uploading = signal(false);
   uploadError = signal<string | null>(null);
+  deleting = signal(false);
 
   get logoUrl(): string | null {
     const c = this.control();
     return c?.value ?? null;
+  }
+
+  /**
+   * Extrae el filename de una URL de imagen.
+   * Ejemplo: "https://storage.googleapis.com/bucket/image-uuid.webp" -> "image-uuid.webp"
+   */
+  private extractFilename(url: string): string | null {
+    try {
+      const urlObj = new URL(url);
+      const pathname = urlObj.pathname;
+      const parts = pathname.split('/');
+      return parts[parts.length - 1] || null;
+    } catch {
+      // Si no es una URL válida, intentar extraer el último segmento
+      const parts = url.split('/');
+      return parts[parts.length - 1] || null;
+    }
   }
 
   onLogoImageError(): void {
@@ -71,6 +89,36 @@ export class LogoUploadComponent {
       error: (err) => {
         this.uploadError.set(err.error?.message || 'Error al subir la imagen');
         this.uploading.set(false);
+      },
+    });
+  }
+
+  onDeleteImage(): void {
+    const url = this.logoUrl;
+    if (!url) return;
+
+    const filename = this.extractFilename(url);
+    if (!filename) {
+      this.uploadError.set('No se pudo extraer el nombre del archivo');
+      return;
+    }
+
+    if (!confirm('¿Eliminar esta imagen?')) return;
+
+    this.deleting.set(true);
+    this.uploadError.set(null);
+
+    this.imageUploadService.deleteImage(filename).subscribe({
+      next: () => {
+        const ctrl = this.control();
+        if (ctrl) {
+          ctrl.setValue(null);
+        }
+        this.deleting.set(false);
+      },
+      error: (err) => {
+        this.uploadError.set(err.error?.message || 'Error al eliminar la imagen');
+        this.deleting.set(false);
       },
     });
   }

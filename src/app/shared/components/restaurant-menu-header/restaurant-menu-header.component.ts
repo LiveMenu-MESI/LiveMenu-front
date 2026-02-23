@@ -1,9 +1,10 @@
-import { Component, input, output } from '@angular/core';
+import { Component, input, output, signal } from '@angular/core';
+import { QrDisplayComponent } from '../qr-display/qr-display.component';
 
 @Component({
   selector: 'app-restaurant-menu-header',
   standalone: true,
-  imports: [],
+  imports: [QrDisplayComponent],
   templateUrl: './restaurant-menu-header.component.html',
   styleUrl: './restaurant-menu-header.component.scss',
 })
@@ -13,4 +14,10 @@ export class RestaurantMenuHeaderComponent {
   description = input<string>('');
   /** Emitido al hacer clic en "Ver perfil" para abrir el modal de edición */
   editProfile = output<void>();
+  
+  showQr = signal(false);
+  
+  toggleQr(): void {
+    this.showQr.update((v) => !v);
+  }
 }
