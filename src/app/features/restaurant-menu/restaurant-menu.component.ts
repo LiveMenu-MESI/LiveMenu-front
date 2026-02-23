@@ -1,6 +1,7 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { of, switchMap } from 'rxjs';
+import { DragDropModule, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { RestaurantMenuHeaderComponent } from '../../shared/components/restaurant-menu-header/restaurant-menu-header.component';
 import { CategoryCardComponent } from '../../shared/components/category-card/category-card.component';
 import { CategoryFormModalComponent } from './category-form-modal/category-form-modal.component';
@@ -9,6 +10,7 @@ import { RestaurantFormModalComponent } from '../restaurants/restaurant-form-mod
 import { RestaurantApiService } from '../../core/services/restaurant-api.service';
 import { CategoryApiService } from '../../core/services/category-api.service';
 import { DishApiService } from '../../core/services/dish-api.service';
+import { NotificationService } from '../../core/services/notification.service';
 import type { RestaurantResponseDto, RestaurantUpdateDto } from '../../core/models/restaurant-api.model';
 import type { CategoryResponseDto } from '../../core/models/category-api.model';
 import type { DishResponseDto } from '../../core/models/dish-api.model';
@@ -17,6 +19,7 @@ import type { DishResponseDto } from '../../core/models/dish-api.model';
   selector: 'app-restaurant-menu',
   standalone: true,
   imports: [
+    DragDropModule,
     RestaurantMenuHeaderComponent,
     CategoryCardComponent,
     CategoryFormModalComponent,
@@ -27,6 +30,8 @@ import type { DishResponseDto } from '../../core/models/dish-api.model';
   styleUrl: './restaurant-menu.component.scss',
 })
 export class RestaurantMenuComponent implements OnInit {
+  private readonly notificationService = inject(NotificationService);
+
   restaurantId = signal<string | null>(null);
   restaurant = signal<RestaurantResponseDto | null>(null);
   categories = signal<CategoryResponseDto[]>([]);
@@ -147,8 +152,15 @@ export class RestaurantMenuComponent implements OnInit {
     const restId = this.restaurantId();
     if (!restId) return;
     this.categoryApi.delete(restId, category.id).subscribe({
-      next: () => this.loadCategories(restId),
-      error: (err: { message?: string }) => this.error.set(err?.message ?? 'Error al eliminar'),
+      next: () => {
+        this.loadCategories(restId);
+        this.notificationService.success('Categoría eliminada correctamente');
+      },
+      error: (err: { message?: string }) => {
+        const message = err?.message ?? 'Error al eliminar categoría';
+        this.error.set(message);
+        this.notificationService.error(message);
+      },
     });
   }
 
@@ -170,8 +182,13 @@ export class RestaurantMenuComponent implements OnInit {
           this.loadCategories(restId);
           this.showCategoryModal.set(false);
           this.editingCategory.set(null);
+          this.notificationService.success('Categoría actualizada correctamente');
         },
-        error: (err: { message?: string }) => this.error.set(err?.message ?? 'Error al actualizar categoría'),
+        error: (err: { message?: string }) => {
+          const message = err?.message ?? 'Error al actualizar categoría';
+          this.error.set(message);
+          this.notificationService.error(message);
+        },
       });
     } else {
       this.categoryApi.create(restId, { name: payload.name, description: payload.description }).subscribe({
@@ -179,8 +196,13 @@ export class RestaurantMenuComponent implements OnInit {
           this.loadCategories(restId);
           this.showCategoryModal.set(false);
           this.editingCategory.set(null);
+          this.notificationService.success('Categoría creada correctamente');
         },
-        error: (err: { message?: string }) => this.error.set(err?.message ?? 'Error al crear categoría'),
+        error: (err: { message?: string }) => {
+          const message = err?.message ?? 'Error al crear categoría';
+          this.error.set(message);
+          this.notificationService.error(message);
+        },
       });
     }
   }
@@ -219,8 +241,13 @@ export class RestaurantMenuComponent implements OnInit {
           this.loadCategories(restId);
           this.showDishModal.set(false);
           this.editingDish.set(null);
+          this.notificationService.success('Platillo actualizado correctamente');
         },
-        error: (err: { message?: string }) => this.error.set(err?.message ?? 'Error al actualizar platillo'),
+        error: (err: { message?: string }) => {
+          const message = err?.message ?? 'Error al actualizar platillo';
+          this.error.set(message);
+          this.notificationService.error(message);
+        },
       });
     } else {
       const body = {
@@ -239,8 +266,13 @@ export class RestaurantMenuComponent implements OnInit {
           this.loadCategories(restId);
           this.showDishModal.set(false);
           this.editingDish.set(null);
+          this.notificationService.success('Platillo creado correctamente');
         },
-        error: (err: { message?: string }) => this.error.set(err?.message ?? 'Error al crear platillo'),
+        error: (err: { message?: string }) => {
+          const message = err?.message ?? 'Error al crear platillo';
+          this.error.set(message);
+          this.notificationService.error(message);
+        },
       });
     }
   }
@@ -265,8 +297,13 @@ export class RestaurantMenuComponent implements OnInit {
       next: (updated) => {
         this.restaurant.set(updated);
         this.showRestaurantModal.set(false);
+        this.notificationService.success('Restaurante actualizado correctamente');
       },
-      error: (err) => this.error.set(err?.message ?? 'Error al actualizar restaurante'),
+      error: (err) => {
+        const message = err?.message ?? 'Error al actualizar restaurante';
+        this.error.set(message);
+        this.notificationService.error(message);
+      },
     });
   }
 
@@ -276,5 +313,30 @@ export class RestaurantMenuComponent implements OnInit {
 
   getDishCount(categoryId: string): number {
     return this.dishCountByCategory()[categoryId] ?? 0;
+  }
+
+  onCategoryDrop(event: CdkDragDrop<CategoryResponseDto[]>): void {
+    const restId = this.restaurantId();
+    if (!restId) return;
+
+    // Reordenar en el array local
+    const categories = [...this.categories()];
+    moveItemInArray(categories, event.previousIndex, event.currentIndex);
+    this.categories.set(categories);
+
+    // Enviar nuevo orden al backend
+    const categoryIds = categories.map((cat) => cat.id);
+    this.categoryApi.reorder(restId, categoryIds).subscribe({
+      next: () => {
+        this.notificationService.success('Categorías reordenadas correctamente');
+      },
+      error: (err: { message?: string }) => {
+        // Si falla, recargar categorías para restaurar el orden original
+        const message = err?.message ?? 'Error al reordenar categorías';
+        this.error.set(message);
+        this.notificationService.error(message);
+        this.loadCategories(restId);
+      },
+    });
   }
 }

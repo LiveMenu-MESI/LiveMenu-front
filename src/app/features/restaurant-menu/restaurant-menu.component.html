@@ -23,16 +23,28 @@
       </div>
     </div>
 
-    <div class="restaurant-menu-page__categories">
+    <div class="restaurant-menu-page__categories" cdkDropList (cdkDropListDropped)="onCategoryDrop($event)">
       @for (category of categories(); track category.id) {
-        <app-category-card
-          [category]="category"
-          [dishCount]="getDishCount(category.id)"
-          [dishes]="getDishes(category.id)"
-          (edit)="onEditCategory(category)"
-          (delete)="onDeleteCategory(category)"
-          (editDish)="onEditDish($event)"
-        />
+        <div cdkDrag class="restaurant-menu-page__category-item">
+          <app-category-card
+            [category]="category"
+            [dishCount]="getDishCount(category.id)"
+            [dishes]="getDishes(category.id)"
+            (edit)="onEditCategory(category)"
+            (delete)="onDeleteCategory(category)"
+            (editDish)="onEditDish($event)"
+          />
+          <div class="restaurant-menu-page__drag-handle" cdkDragHandle>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="9" cy="12" r="1"/>
+              <circle cx="9" cy="5" r="1"/>
+              <circle cx="9" cy="19" r="1"/>
+              <circle cx="15" cy="12" r="1"/>
+              <circle cx="15" cy="5" r="1"/>
+              <circle cx="15" cy="19" r="1"/>
+            </svg>
+          </div>
+        </div>
       }
     </div>
 
