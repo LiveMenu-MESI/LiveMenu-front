@@ -43,8 +43,26 @@
     }
   }
 
+  &__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: inherit;
+  }
+
   &__actions {
     flex: 1;
+    min-width: 0;
+  }
+
+  &__input {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.9375rem;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    box-sizing: border-box;
+    margin-bottom: 0.35rem;
   }
 
   &__button {

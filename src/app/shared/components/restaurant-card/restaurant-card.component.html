@@ -1,10 +1,29 @@
 <div class="restaurant-card">
-  <div class="restaurant-card__icon" [innerHTML]="buildingIcon"></div>
-  <h3 class="restaurant-card__name">{{ restaurant().name }}</h3>
-  <p class="restaurant-card__subtitle">{{ restaurant().subtitle || '—' }}</p>
-  <div class="restaurant-card__actions">
-    <a [routerLink]="['/restaurants', restaurant().id]" class="restaurant-card__btn restaurant-card__btn--menu">Gestionar menú</a>
-    <button type="button" class="restaurant-card__btn restaurant-card__btn--edit" (click)="edit.emit()">Editar</button>
-    <button type="button" class="restaurant-card__btn restaurant-card__btn--delete" (click)="delete.emit()">Eliminar</button>
+  <div class="restaurant-card__header">
+    <a [routerLink]="['/restaurants', restaurant().id]" class="restaurant-card__link">
+      <div class="restaurant-card__logo">
+        @if (restaurant().logo) {
+          <img [src]="restaurant().logo" [alt]="restaurant().name" class="restaurant-card__logo-img" />
+        } @else {
+          <span class="restaurant-card__logo-icon" [innerHTML]="buildingIcon"></span>
+        }
+      </div>
+      <div class="restaurant-card__info">
+        <h3 class="restaurant-card__name">{{ restaurant().name }}</h3>
+        <p class="restaurant-card__subtitle">{{ restaurant().subtitle || '—' }}</p>
+      </div>
+    </a>
+    <button
+      type="button"
+      class="restaurant-card__delete"
+      (click)="delete.emit(); $event.stopPropagation()"
+      aria-label="Eliminar restaurante"
+      title="Eliminar"
+    >
+      <svg class="restaurant-card__trash-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <polyline points="3 6 5 6 21 6"></polyline>
+        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+      </svg>
+    </button>
   </div>
 </div>

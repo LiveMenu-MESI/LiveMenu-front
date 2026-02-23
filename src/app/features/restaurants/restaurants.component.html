@@ -29,7 +29,6 @@
       @for (restaurant of restaurants(); track restaurant.id) {
         <app-restaurant-card
           [restaurant]="restaurant"
-          (edit)="openEditModal(restaurant)"
           (delete)="onDeleteRestaurant(restaurant)"
         />
       }

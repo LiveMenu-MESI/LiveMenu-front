@@ -1,7 +1,7 @@
 <div class="restaurant-menu-header">
   <div class="restaurant-menu-header__info">
     <h1 class="restaurant-menu-header__name">{{ name() }}</h1>
-    <a [routerLink]="['/restaurants', restaurantId()]" class="restaurant-menu-header__profile-link">Ver perfil</a>
+    <button type="button" class="restaurant-menu-header__profile-link" (click)="editProfile.emit()">Ver perfil</button>
   </div>
   @if (description()) {
     <p class="restaurant-menu-header__description">{{ description() }}</p>

@@ -11,6 +11,7 @@
         [restaurantId]="restaurant()!.id"
         [name]="restaurant()!.name"
         [description]="restaurant()!.description ?? 'Gestiona las categorías y platillos del menú'"
+        (editProfile)="onEditProfile()"
       />
       <div class="restaurant-menu-page__actions">
         <button type="button" class="restaurant-menu-page__btn restaurant-menu-page__btn--secondary" (click)="addCategory()">
@@ -27,8 +28,10 @@
         <app-category-card
           [category]="category"
           [dishCount]="getDishCount(category.id)"
+          [dishes]="getDishes(category.id)"
           (edit)="onEditCategory(category)"
           (delete)="onDeleteCategory(category)"
+          (editDish)="onEditDish($event)"
         />
       }
     </div>
@@ -38,6 +41,24 @@
         [category]="editingCategory()"
         (saved)="onCategoryModalSaved($event)"
         (cancelled)="onCategoryModalCancelled()"
+      />
+    }
+
+    @if (showDishModal() && restaurantId()) {
+      <app-dish-form-modal
+        [categories]="categories()"
+        [restaurantId]="restaurantId()!"
+        [dish]="editingDish()"
+        (saved)="onDishModalSaved($event)"
+        (cancelled)="onDishModalCancelled()"
+      />
+    }
+
+    @if (showRestaurantModal() && restaurant()) {
+      <app-restaurant-form-modal
+        [restaurant]="restaurant()"
+        (saved)="onRestaurantModalSaved($event)"
+        (cancelled)="onRestaurantModalCancelled()"
       />
     }
   }

@@ -4,17 +4,25 @@ import { of, switchMap } from 'rxjs';
 import { RestaurantMenuHeaderComponent } from '../../shared/components/restaurant-menu-header/restaurant-menu-header.component';
 import { CategoryCardComponent } from '../../shared/components/category-card/category-card.component';
 import { CategoryFormModalComponent } from './category-form-modal/category-form-modal.component';
+import { DishFormModalComponent } from './dish-form-modal/dish-form-modal.component';
+import { RestaurantFormModalComponent } from '../restaurants/restaurant-form-modal/restaurant-form-modal.component';
 import { RestaurantApiService } from '../../core/services/restaurant-api.service';
 import { CategoryApiService } from '../../core/services/category-api.service';
 import { DishApiService } from '../../core/services/dish-api.service';
-import type { RestaurantResponseDto } from '../../core/models/restaurant-api.model';
+import type { RestaurantResponseDto, RestaurantUpdateDto } from '../../core/models/restaurant-api.model';
 import type { CategoryResponseDto } from '../../core/models/category-api.model';
 import type { DishResponseDto } from '../../core/models/dish-api.model';
 
 @Component({
   selector: 'app-restaurant-menu',
   standalone: true,
-  imports: [RestaurantMenuHeaderComponent, CategoryCardComponent, CategoryFormModalComponent],
+  imports: [
+    RestaurantMenuHeaderComponent,
+    CategoryCardComponent,
+    CategoryFormModalComponent,
+    DishFormModalComponent,
+    RestaurantFormModalComponent,
+  ],
   templateUrl: './restaurant-menu.component.html',
   styleUrl: './restaurant-menu.component.scss',
 })
@@ -24,12 +32,21 @@ export class RestaurantMenuComponent implements OnInit {
   categories = signal<CategoryResponseDto[]>([]);
   /** Por categoría: categoryId -> número de platillos */
   dishCountByCategory = signal<Record<string, number>>({});
+  /** Por categoría: categoryId -> lista de platillos */
+  dishesByCategory = signal<Record<string, DishResponseDto[]>>({});
   loading = signal(true);
   error = signal<string | null>(null);
 
   /** Modal categoría: si es null = nueva categoría, si no = editar esa categoría */
   editingCategory = signal<CategoryResponseDto | null>(null);
   showCategoryModal = signal(false);
+
+  /** Modal platillo: null = nuevo, si no = editar */
+  editingDish = signal<DishResponseDto | null>(null);
+  showDishModal = signal(false);
+
+  /** Modal editar restaurante (desde "Ver perfil") */
+  showRestaurantModal = signal(false);
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -85,25 +102,39 @@ export class RestaurantMenuComponent implements OnInit {
 
   private loadDishCounts(restaurantId: string, categories: CategoryResponseDto[]): void {
     const counts: Record<string, number> = {};
+    const byCategory: Record<string, DishResponseDto[]> = {};
     if (categories.length === 0) {
       this.dishCountByCategory.set({});
+      this.dishesByCategory.set({});
       return;
     }
     let pending = categories.length;
     categories.forEach((cat) => {
-      this.dishApi.list(restaurantId, cat.id).subscribe({
+      this.dishApi.list(restaurantId, { categoryId: cat.id }).subscribe({
         next: (dishes: DishResponseDto[]) => {
           counts[cat.id] = dishes.length;
+          byCategory[cat.id] = dishes;
           pending--;
-          if (pending === 0) this.dishCountByCategory.set({ ...counts });
+          if (pending === 0) {
+            this.dishCountByCategory.set({ ...counts });
+            this.dishesByCategory.set({ ...byCategory });
+          }
         },
         error: () => {
           counts[cat.id] = 0;
+          byCategory[cat.id] = [];
           pending--;
-          if (pending === 0) this.dishCountByCategory.set({ ...counts });
+          if (pending === 0) {
+            this.dishCountByCategory.set({ ...counts });
+            this.dishesByCategory.set({ ...byCategory });
+          }
         },
       });
     });
+  }
+
+  getDishes(categoryId: string): DishResponseDto[] {
+    return this.dishesByCategory()[categoryId] ?? [];
   }
 
   onEditCategory(category: CategoryResponseDto): void {
@@ -160,7 +191,87 @@ export class RestaurantMenuComponent implements OnInit {
   }
 
   addDish(): void {
-    // TODO: modal nuevo platillo
+    this.editingDish.set(null);
+    this.showDishModal.set(true);
+  }
+
+  onEditDish(dish: DishResponseDto): void {
+    this.editingDish.set(dish);
+    this.showDishModal.set(true);
+  }
+
+  onDishModalSaved(payload: Record<string, unknown>): void {
+    const restId = this.restaurantId();
+    if (!restId) return;
+    if (payload['id']) {
+      this.dishApi.update(restId, payload['id'] as string, {
+        categoryId: payload['categoryId'] as string,
+        name: payload['name'] as string,
+        price: payload['price'] as number,
+        offerPrice: payload['offerPrice'] as number | undefined,
+        description: payload['description'] as string | undefined,
+        imageUrl: payload['imageUrl'] as string | undefined,
+        tags: payload['tags'] as string[] | undefined,
+        available: payload['available'] as boolean,
+        featured: payload['featured'] as boolean,
+      }).subscribe({
+        next: () => {
+          this.loadCategories(restId);
+          this.showDishModal.set(false);
+          this.editingDish.set(null);
+        },
+        error: (err: { message?: string }) => this.error.set(err?.message ?? 'Error al actualizar platillo'),
+      });
+    } else {
+      const body = {
+        categoryId: payload['categoryId'] as string,
+        name: payload['name'] as string,
+        price: payload['price'] as number,
+        offerPrice: payload['offerPrice'] as number | undefined,
+        description: payload['description'] as string | undefined,
+        imageUrl: payload['imageUrl'] as string | undefined,
+        tags: payload['tags'] as string[] | undefined,
+        available: (payload['available'] as boolean) ?? true,
+        featured: (payload['featured'] as boolean) ?? false,
+      };
+      this.dishApi.create(restId, body).subscribe({
+        next: () => {
+          this.loadCategories(restId);
+          this.showDishModal.set(false);
+          this.editingDish.set(null);
+        },
+        error: (err: { message?: string }) => this.error.set(err?.message ?? 'Error al crear platillo'),
+      });
+    }
+  }
+
+  onDishModalCancelled(): void {
+    this.showDishModal.set(false);
+    this.editingDish.set(null);
+  }
+
+  onEditProfile(): void {
+    this.showRestaurantModal.set(true);
+  }
+
+  onRestaurantModalSaved(payload: RestaurantUpdateDto & { id?: string }): void {
+    const id = payload.id;
+    if (!id) {
+      this.showRestaurantModal.set(false);
+      return;
+    }
+    const { id: _id, ...body } = payload;
+    this.restaurantApi.update(id, body).subscribe({
+      next: (updated) => {
+        this.restaurant.set(updated);
+        this.showRestaurantModal.set(false);
+      },
+      error: (err) => this.error.set(err?.message ?? 'Error al actualizar restaurante'),
+    });
+  }
+
+  onRestaurantModalCancelled(): void {
+    this.showRestaurantModal.set(false);
   }
 
   getDishCount(categoryId: string): number {

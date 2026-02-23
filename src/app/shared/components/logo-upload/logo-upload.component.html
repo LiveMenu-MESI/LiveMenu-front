@@ -1,12 +1,24 @@
 <div class="logo-upload">
   <div class="logo-upload__preview">
-    <span class="logo-upload__icon" [innerHTML]="buildingIcon"></span>
+    @if (control() && logoUrl && !logoImageError()) {
+      <img [src]="logoUrl" alt="Logo" class="logo-upload__img" (error)="onLogoImageError()" />
+    }
+    @if (!control() || !logoUrl || logoImageError()) {
+      <span class="logo-upload__icon" [innerHTML]="buildingIcon"></span>
+    }
   </div>
   <div class="logo-upload__actions">
-    <button type="button" class="logo-upload__button">
-      <span class="logo-upload__button-icon" [innerHTML]="uploadIcon"></span>
-      Subir Logo
-    </button>
-    <p class="logo-upload__hint">Formato: JPG, PNG. Tamaño recomendado: 512x512px</p>
+    @if (control(); as ctrl) {
+      <input
+        type="url"
+        [value]="ctrl.value"
+        (input)="logoImageError.set(false); ctrl.setValue($any($event.target).value)"
+        class="logo-upload__input"
+        placeholder="https://ejemplo.com/logo.png"
+      />
+      <p class="logo-upload__hint">Indica la URL del logo o sube la imagen a un servicio y pega el enlace. Recomendado: 512×512px</p>
+    } @else {
+      <p class="logo-upload__hint">Formato: JPG, PNG. Tamaño recomendado: 512×512px</p>
+    }
   </div>
 </div>

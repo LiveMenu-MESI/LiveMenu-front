@@ -30,7 +30,9 @@ export class AuthService {
   }
 
   getToken(): string | null {
-    return this.accessToken();
+    const stored = this.loadToken();
+    if (stored !== this.accessToken()) this.accessToken.set(stored);
+    return stored;
   }
 
   getRefreshToken(): string | null {

@@ -28,7 +28,7 @@ if (fs.existsSync(envPath)) {
   });
 }
 
-const apiUrl = env.API_URL || 'https://api.naing.co';
+const apiUrl = env.API_URL !== undefined ? String(env.API_URL) : 'http://api.naing.co:8080';
 const devRestaurantId = env.DEV_RESTAURANT_ID;
 
 const outDir = path.join(__dirname, '../src/app/core/generated');
@@ -49,4 +49,3 @@ if (!fs.existsSync(outDir)) {
 }
 fs.writeFileSync(outFile, content, 'utf8');
 
-console.log('config generado desde .env → apiUrl:', apiUrl, '| devRestaurantId:', devRestaurantId || '(no definido)', '| production:', isProduction);
