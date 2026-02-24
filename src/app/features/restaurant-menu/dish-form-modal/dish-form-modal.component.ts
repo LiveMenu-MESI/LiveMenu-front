@@ -160,12 +160,15 @@ export class DishFormModalComponent implements OnInit {
 
     this.imageUploadService.uploadImage(file).subscribe({
       next: (response) => {
+        console.log('Upload successful:', response);
         // Usar la URL large como imagen del plato
         this.form.patchValue({ imageUrl: response.largeUrl });
         this.uploading.set(false);
       },
       error: (err) => {
-        this.uploadError.set(err.error?.message || 'Error al subir la imagen');
+        console.error('Upload error:', err);
+        const errorMessage = err.error?.message || err.message || 'Error al subir la imagen';
+        this.uploadError.set(errorMessage);
         this.uploading.set(false);
       },
     });

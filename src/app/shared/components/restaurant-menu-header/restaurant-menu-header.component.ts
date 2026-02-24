@@ -12,6 +12,7 @@ export class RestaurantMenuHeaderComponent {
   restaurantId = input.required<string>();
   name = input.required<string>();
   description = input<string>('');
+  restaurantSlug = input<string | undefined>(undefined);
   /** Emitido al hacer clic en "Ver perfil" para abrir el modal de edición */
   editProfile = output<void>();
   

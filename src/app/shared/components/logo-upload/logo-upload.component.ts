@@ -79,15 +79,18 @@ export class LogoUploadComponent {
 
     this.imageUploadService.uploadImage(file).subscribe({
       next: (response) => {
+        console.log('Upload successful:', response);
         const ctrl = this.control();
         if (ctrl) {
-          // Usar la URL large como logo
-          ctrl.setValue(response.largeUrl);
+          // Usar la URL thumbnail para logos (se muestran pequeños)
+          ctrl.setValue(response.thumbnailUrl);
         }
         this.uploading.set(false);
       },
       error: (err) => {
-        this.uploadError.set(err.error?.message || 'Error al subir la imagen');
+        console.error('Upload error:', err);
+        const errorMessage = err.error?.message || err.message || 'Error al subir la imagen';
+        this.uploadError.set(errorMessage);
         this.uploading.set(false);
       },
     });

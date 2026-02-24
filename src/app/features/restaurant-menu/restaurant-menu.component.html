@@ -11,6 +11,7 @@
         [restaurantId]="restaurant()!.id"
         [name]="restaurant()!.name"
         [description]="restaurant()!.description ?? 'Gestiona las categorías y platillos del menú'"
+        [restaurantSlug]="restaurant()!.slug"
         (editProfile)="onEditProfile()"
       />
       <div class="restaurant-menu-page__actions">

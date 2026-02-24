@@ -103,7 +103,7 @@ export function getQrInfoUrl(restaurantId: string): string {
 /** Descargar QR: GET /api/v1/admin/restaurants/:restaurantId/qr/download */
 export function getQrDownloadUrl(
   restaurantId: string,
-  options?: { size?: 'S' | 'M' | 'L' | 'XL'; format?: 'PNG' | 'SVG'; includeLogo?: boolean }
+  options?: { size?: 'S' | 'M' | 'L' | 'XL'; format?: 'PNG' | 'SVG'; includeLogo?: boolean; url?: string }
 ): string {
   const base = `${getQrInfoUrl(restaurantId)}/download`;
   if (!options) return base;
@@ -112,6 +112,7 @@ export function getQrDownloadUrl(
   if (options.size) params.set('size', options.size);
   if (options.format) params.set('format', options.format);
   if (options.includeLogo !== undefined) params.set('includeLogo', String(options.includeLogo));
+  if (options.url) params.set('url', options.url);
   
   const query = params.toString();
   return query ? `${base}?${query}` : base;

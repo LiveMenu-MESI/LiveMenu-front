@@ -36,8 +36,7 @@ export const routes: Routes = [
       {
         path: '',
         pathMatch: 'full',
-        loadComponent: () =>
-          import('./features/home/home.component').then((m) => m.HomeComponent),
+        redirectTo: 'restaurants',
       },
       {
         path: 'restaurants',
@@ -48,11 +47,6 @@ export const routes: Routes = [
         path: 'restaurants/:restaurantId',
         loadComponent: () =>
           import('./features/restaurant-menu/restaurant-menu.component').then((m) => m.RestaurantMenuComponent),
-      },
-      {
-        path: 'dashboard',
-        loadComponent: () =>
-          import('./features/restaurants/restaurants.component').then((m) => m.RestaurantsComponent),
       },
       {
         path: 'analytics',

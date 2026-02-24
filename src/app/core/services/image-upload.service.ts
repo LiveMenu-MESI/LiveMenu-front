@@ -26,9 +26,15 @@ export class ImageUploadService {
    */
   uploadImage(file: File): Observable<ImageUploadResponse> {
     const formData = new FormData();
-    formData.append('image', file);
+    formData.append('image', file, file.name);
 
-    return this.http.post<ImageUploadResponse>(getImageUploadUrl(), formData);
+    const url = getImageUploadUrl();
+    console.log('Uploading image to:', url);
+    console.log('File:', file.name, file.type, file.size);
+
+    return this.http.post<ImageUploadResponse>(url, formData, {
+      // No establecer Content-Type manualmente, el navegador lo hace automáticamente para FormData
+    });
   }
 
   /**

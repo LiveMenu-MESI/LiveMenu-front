@@ -13,10 +13,19 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const token = auth.getToken();
 
   // Añadir token a la petición
+  // No modificar headers si es FormData (para uploads de imágenes)
   if (token) {
-    req = req.clone({
-      setHeaders: { Authorization: `Bearer ${token}` },
-    });
+    if (req.body instanceof FormData) {
+      // Para FormData, solo añadir el token, el navegador maneja Content-Type automáticamente
+      req = req.clone({
+        setHeaders: { Authorization: `Bearer ${token}` },
+      });
+    } else {
+      // Para otras peticiones, añadir token normalmente
+      req = req.clone({
+        setHeaders: { Authorization: `Bearer ${token}` },
+      });
+    }
   }
 
   return next(req).pipe(

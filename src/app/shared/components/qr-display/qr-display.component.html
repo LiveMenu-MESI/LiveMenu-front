@@ -16,13 +16,25 @@
         </p>
         <div class="qr-display__url">
           <label>URL del menú:</label>
-          <code class="qr-display__url-text">{{ qrInfo()!.publicMenuUrl }}</code>
+          <code class="qr-display__url-text">{{ frontendMenuUrl() || qrInfo()!.publicMenuUrl }}</code>
         </div>
       </div>
 
       <div class="qr-display__preview">
-        @if (qrImageUrl()) {
-          <img [src]="qrImageUrl()!" alt="QR Code" class="qr-display__image" />
+        @if (qrImageUrl() && !imageError()) {
+          <img 
+            [src]="qrImageUrl()!" 
+            alt="QR Code" 
+            class="qr-display__image"
+            (error)="onImageError($event)"
+            (load)="onImageLoad()"
+          />
+        } @else if (imageError()) {
+          <div class="qr-display__placeholder qr-display__placeholder--error">
+            Error al cargar el QR. Intenta descargarlo.
+          </div>
+        } @else {
+          <div class="qr-display__placeholder">Cargando QR...</div>
         }
       </div>
 

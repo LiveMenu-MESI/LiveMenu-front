@@ -29,6 +29,7 @@ if (fs.existsSync(envPath)) {
 }
 
 const apiUrl = env.API_URL !== undefined ? String(env.API_URL) : 'http://api.naing.co:8080';
+const frontendUrl = env.FRONTEND_URL !== undefined ? String(env.FRONTEND_URL) : 'http://localhost:4200';
 const devRestaurantId = env.DEV_RESTAURANT_ID;
 
 const outDir = path.join(__dirname, '../src/app/core/generated');
@@ -40,6 +41,7 @@ const content = `/**
 export const config = {
   production: ${isProduction},
   apiUrl: '${String(apiUrl).replace(/'/g, "\\'")}',
+  frontendUrl: '${String(frontendUrl).replace(/'/g, "\\'")}',
   devRestaurantId: ${devRestaurantId ? `'${String(devRestaurantId).replace(/'/g, "\\'")}'` : 'undefined'},
 };
 `;

@@ -16,7 +16,7 @@
   
   @if (showQr()) {
     <div class="restaurant-menu-header__qr">
-      <app-qr-display [restaurantId]="restaurantId()" />
+      <app-qr-display [restaurantId]="restaurantId()" [restaurantSlug]="restaurantSlug()" />
     </div>
   }
 </div>

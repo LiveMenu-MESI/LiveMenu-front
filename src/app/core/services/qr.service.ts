@@ -16,6 +16,7 @@ export interface QrDownloadOptions {
   size?: 'S' | 'M' | 'L' | 'XL';
   format?: 'PNG' | 'SVG';
   includeLogo?: boolean;
+  url?: string;
 }
 
 @Injectable({ providedIn: 'root' })
