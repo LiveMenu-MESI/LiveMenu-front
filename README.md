@@ -1,3 +1,6 @@
+
+
+
 # App (Frontend)
 
 Aplicación Angular básica con Docker.
@@ -76,3 +79,16 @@ Todas las peticiones llevan `Authorization: Bearer <token>`. Para probar:
 
 1. Haz login con `POST /api/v1/auth/login` (email, password).
 2. Guarda el `access_token` de la respuesta en `localStorage` con clave `livemenu_access_token`, o implementa el flujo de login en la app para que `AuthService` lo guarde.
+
+
+ARQUITECTURA +
+
+<img width="2692" height="2708" alt="image" src="https://github.com/user-attachments/assets/04a634e5-8f27-4b5f-a2e4-f513097439af" />
+
+<img width="4416" height="3280" alt="image" src="https://github.com/user-attachments/assets/24c1b9b0-a152-41fe-9e09-a718b07112e0" />
+
+
+
+
+
+
