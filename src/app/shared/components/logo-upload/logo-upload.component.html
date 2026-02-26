@@ -1,12 +1,53 @@
 <div class="logo-upload">
   <div class="logo-upload__preview">
-    <span class="logo-upload__icon" [innerHTML]="buildingIcon"></span>
+    @if (control() && logoUrl && !logoImageError()) {
+      <img [src]="logoUrl" alt="Logo" class="logo-upload__img" (error)="onLogoImageError()" />
+      @if (!deleting()) {
+        <button type="button" class="logo-upload__delete" (click)="onDeleteImage()" aria-label="Eliminar imagen">
+          ×
+        </button>
+      }
+    }
+    @if (!control() || !logoUrl || logoImageError()) {
+      <span class="logo-upload__icon" [innerHTML]="buildingIcon"></span>
+    }
+    @if (uploading()) {
+      <div class="logo-upload__uploading">Subiendo...</div>
+    }
+    @if (deleting()) {
+      <div class="logo-upload__uploading">Eliminando...</div>
+    }
   </div>
   <div class="logo-upload__actions">
-    <button type="button" class="logo-upload__button">
-      <span class="logo-upload__button-icon" [innerHTML]="uploadIcon"></span>
-      Subir Logo
-    </button>
-    <p class="logo-upload__hint">Formato: JPG, PNG. Tamaño recomendado: 512x512px</p>
+    @if (control(); as ctrl) {
+      <div class="logo-upload__upload-section">
+        <label class="logo-upload__file-label">
+          <span class="logo-upload__file-icon" [innerHTML]="uploadIcon"></span>
+          <span>Subir Imagen</span>
+          <input
+            type="file"
+            accept="image/jpeg,image/jpg,image/png,image/webp"
+            (change)="onFileSelected($event)"
+            class="logo-upload__file-input"
+            [disabled]="uploading()"
+          />
+        </label>
+        <span class="logo-upload__divider">o</span>
+        <input
+          type="url"
+          [value]="ctrl.value"
+          (input)="logoImageError.set(false); uploadError.set(null); ctrl.setValue($any($event.target).value)"
+          class="logo-upload__input"
+          placeholder="https://ejemplo.com/logo.png"
+          [disabled]="uploading()"
+        />
+      </div>
+      @if (uploadError()) {
+        <p class="logo-upload__error">{{ uploadError() }}</p>
+      }
+      <p class="logo-upload__hint">Formato: JPG, PNG, WebP. Máximo 5MB. Recomendado: 512×512px</p>
+    } @else {
+      <p class="logo-upload__hint">Formato: JPG, PNG, WebP. Tamaño recomendado: 512×512px</p>
+    }
   </div>
 </div>

@@ -1,0 +1,126 @@
+<div class="home-page">
+  @if (restaurantDropdownOpen()) {
+    <div class="home-page__backdrop" (click)="closeRestaurantDropdown()" aria-hidden="true"></div>
+  }
+  <div class="home-page__top">
+    <header class="home-page__header">
+      <h1 class="home-page__title">Menú Digital</h1>
+      <p class="home-page__subtitle">Explora nuestros deliciosos platos</p>
+    </header>
+    <div class="home-page__restaurant-selector" [class.home-page__restaurant-selector--open]="restaurantDropdownOpen()">
+      <button
+        type="button"
+        class="home-page__restaurant-trigger"
+        (click)="toggleRestaurantDropdown()"
+        [attr.aria-expanded]="restaurantDropdownOpen()"
+        aria-haspopup="listbox"
+        aria-label="Seleccionar restaurante"
+      >
+        @if (selectedRestaurant(); as rest) {
+          <span class="home-page__restaurant-logo">
+            @if (rest.logo) {
+              <img [src]="rest.logo" [alt]="rest.name" />
+            } @else {
+              <span class="home-page__restaurant-logo-placeholder" aria-hidden="true">R</span>
+            }
+          </span>
+          <span class="home-page__restaurant-info">
+            <span class="home-page__restaurant-name">{{ rest.name }}</span>
+            <span class="home-page__restaurant-desc">{{ rest.description || 'Restaurante' }}</span>
+          </span>
+        } @else {
+          <span class="home-page__restaurant-info">
+            <span class="home-page__restaurant-name">Selecciona un restaurante</span>
+          </span>
+        }
+        <span class="home-page__restaurant-chevron" aria-hidden="true">▼</span>
+      </button>
+      @if (restaurantDropdownOpen()) {
+        <div class="home-page__restaurant-dropdown" role="listbox">
+          @for (r of restaurants(); track r.id) {
+            <button
+              type="button"
+              class="home-page__restaurant-option"
+              role="option"
+              [attr.aria-selected]="selectedRestaurantId() === r.id"
+              (click)="selectRestaurant(r.id)"
+            >
+              <span class="home-page__restaurant-logo">
+                @if (r.logo) {
+                  <img [src]="r.logo" [alt]="r.name" />
+                } @else {
+                  <span class="home-page__restaurant-logo-placeholder">R</span>
+                }
+              </span>
+              <span class="home-page__restaurant-info">
+                <span class="home-page__restaurant-name">{{ r.name }}</span>
+                <span class="home-page__restaurant-desc">{{ r.description || 'Restaurante' }}</span>
+              </span>
+            </button>
+          }
+        </div>
+      }
+    </div>
+  </div>
+
+  @if (error()) {
+    <div class="home-page__error">{{ error() }}</div>
+  }
+
+  @if (loading()) {
+    <p class="home-page__loading">Cargando menú...</p>
+  } @else if (selectedRestaurant()) {
+    <div class="home-page__filters">
+      <button
+        type="button"
+        class="home-page__filter-pill"
+        [class.home-page__filter-pill--active]="selectedCategoryId() === ''"
+        (click)="selectCategory('')"
+      >
+        Todos
+      </button>
+      @for (cat of categories(); track cat.id) {
+        <button
+          type="button"
+          class="home-page__filter-pill"
+          [class.home-page__filter-pill--active]="selectedCategoryId() === cat.id"
+          (click)="selectCategory(cat.id)"
+        >
+          {{ cat.name }}
+        </button>
+      }
+    </div>
+
+    <div class="home-page__grid">
+      @for (dish of filteredDishes(); track dish.id) {
+        <article class="home-page__dish-card">
+          <div class="home-page__dish-image-wrap">
+            @if (dish.imageUrl) {
+              <img [src]="dish.imageUrl" [alt]="dish.name" class="home-page__dish-image" />
+            } @else {
+              <div class="home-page__dish-image-placeholder">
+                <span class="home-page__dish-placeholder-icon" aria-hidden="true">🍽</span>
+              </div>
+            }
+            @if (dish.featured) {
+              <span class="home-page__dish-badge">Popular</span>
+            }
+          </div>
+          <div class="home-page__dish-content">
+            <h3 class="home-page__dish-name">{{ dish.name }}</h3>
+            @if (dish.description) {
+              <p class="home-page__dish-desc">{{ dish.description }}</p>
+            }
+            <p class="home-page__dish-price">{{ formatPrice(dish.price) }}</p>
+          </div>
+        </article>
+      }
+    </div>
+
+    @if (filteredDishes().length === 0) {
+      <p class="home-page__empty">No hay platos en esta categoría.</p>
+    }
+  } @else if (!loading() && restaurants().length === 0) {
+    <p class="home-page__empty">No tienes restaurantes. Crea uno en Mis Restaurantes.</p>
+  }
+</div>

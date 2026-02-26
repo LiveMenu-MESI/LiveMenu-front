@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { getCategoriesUrl, getCategoryByIdUrl } from '../constants/api.constants';
+import { getCategoriesUrl, getCategoryByIdUrl, getCategoriesReorderUrl } from '../constants/api.constants';
 import type { CategoryResponseDto, CategoryCreateDto, CategoryUpdateDto } from '../models/category-api.model';
 
 @Injectable({ providedIn: 'root' })
@@ -26,5 +26,14 @@ export class CategoryApiService {
 
   delete(restaurantId: string, categoryId: string): Observable<void> {
     return this.http.delete<void>(getCategoryByIdUrl(restaurantId, categoryId));
+  }
+
+  /**
+   * Reordena las categorías según el orden proporcionado.
+   * @param restaurantId UUID del restaurante
+   * @param categoryIds Array de IDs de categorías en el orden deseado
+   */
+  reorder(restaurantId: string, categoryIds: string[]): Observable<void> {
+    return this.http.patch<void>(getCategoriesReorderUrl(restaurantId), { categoryIds });
   }
 }

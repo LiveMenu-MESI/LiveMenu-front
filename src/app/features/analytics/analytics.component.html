@@ -1,0 +1,94 @@
+<div class="analytics">
+  @if (loading()) {
+    <div class="analytics__loading">
+      <p>Cargando analytics...</p>
+    </div>
+  } @else if (error()) {
+    <div class="analytics__error">
+      <h2>Error</h2>
+      <p>{{ error() }}</p>
+    </div>
+  } @else if (analytics() && restaurant()) {
+    <div class="analytics__header">
+      <div>
+        <h1 class="analytics__title">Analytics</h1>
+        <p class="analytics__subtitle">{{ restaurant()!.name }}</p>
+      </div>
+      <button type="button" class="analytics__export-btn" (click)="exportToCsv()">
+        📥 Exportar CSV
+      </button>
+    </div>
+
+    @if (metrics(); as m) {
+      <div class="analytics__metrics">
+        <div class="analytics__card">
+          <h3 class="analytics__card-title">Vistas Totales</h3>
+          <p class="analytics__card-value">{{ m.totalViews.toLocaleString() }}</p>
+        </div>
+
+        <div class="analytics__card">
+          <h3 class="analytics__card-title">Visitantes Únicos</h3>
+          <p class="analytics__card-value">{{ m.uniqueVisitors.toLocaleString() }}</p>
+        </div>
+
+        <div class="analytics__card">
+          <h3 class="analytics__card-title">Promedio Diario</h3>
+          <p class="analytics__card-value">{{ m.averageViewsPerDay.toFixed(1) }}</p>
+        </div>
+
+        @if (m.peakDay) {
+          <div class="analytics__card">
+            <h3 class="analytics__card-title">Día Pico</h3>
+            <p class="analytics__card-value">{{ m.peakDay.views.toLocaleString() }}</p>
+            <p class="analytics__card-subtitle">{{ m.peakDay.date }}</p>
+          </div>
+        }
+      </div>
+
+      @if (m.popularDishes && m.popularDishes.length > 0) {
+        <div class="analytics__section">
+          <h2 class="analytics__section-title">Platillos Más Populares</h2>
+          <div class="analytics__list">
+            @for (dish of m.popularDishes; track dish.dishId) {
+              <div class="analytics__list-item">
+                <span class="analytics__list-name">{{ dish.dishName }}</span>
+                <span class="analytics__list-value">{{ dish.views.toLocaleString() }} vistas</span>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      @if (m.viewsByCategory && m.viewsByCategory.length > 0) {
+        <div class="analytics__section">
+          <h2 class="analytics__section-title">Vistas por Categoría</h2>
+          <div class="analytics__list">
+            @for (category of m.viewsByCategory; track category.categoryId) {
+              <div class="analytics__list-item">
+                <span class="analytics__list-name">{{ category.categoryName }}</span>
+                <span class="analytics__list-value">{{ category.views.toLocaleString() }} vistas</span>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      @if (m.viewsByDay && m.viewsByDay.length > 0) {
+        <div class="analytics__section">
+          <h2 class="analytics__section-title">Vistas por Día</h2>
+          <div class="analytics__chart">
+            @for (day of m.viewsByDay; track day.date) {
+              <div class="analytics__chart-item">
+                <div class="analytics__chart-bar" [style.height.%]="getBarHeight(day.views, m.viewsByDay)">
+                  <span class="analytics__chart-value">{{ day.views }}</span>
+                </div>
+                <span class="analytics__chart-label">{{ formatDate(day.date) }}</span>
+              </div>
+            }
+          </div>
+        </div>
+      }
+    }
+  }
+</div>
+

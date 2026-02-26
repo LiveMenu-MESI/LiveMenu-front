@@ -96,6 +96,6 @@ export class RestaurantsComponent implements OnInit {
     const subtitle = dto.description?.trim()
       ? (dto.description.length > 50 ? dto.description.slice(0, 50) + '…' : dto.description)
       : '—';
-    return { id: dto.id, name: dto.name, subtitle };
+    return { id: dto.id, name: dto.name, subtitle, logo: dto.logo };
   }
 }

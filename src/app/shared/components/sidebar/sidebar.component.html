@@ -22,22 +22,29 @@
       <button type="button" class="sidebar__drawer-close" aria-label="Cerrar menú" (click)="closeMenu()">&times;</button>
     </div>
     <nav class="sidebar__nav" (click)="closeMenu()">
-      <app-sidebar-nav-item link="/" label="Home" icon="home" [exact]="true" />
-      <app-sidebar-nav-item link="/dashboard" label="Dashboard" icon="dashboard" />
       <app-sidebar-nav-item link="/restaurants" label="My Restaurants" icon="building" />
       <app-sidebar-nav-item link="/analytics" label="Analytics" icon="chart" [showArrow]="true" />
-      <app-sidebar-nav-item link="/schedules" label="Schedules" icon="calendar" [showPlus]="true" [badge]="2" />
     </nav>
     <nav class="sidebar__nav sidebar__nav--secondary" (click)="closeMenu()">
-      <app-sidebar-nav-item link="/messages" label="Messages" icon="message" [badge]="2" />
-      <app-sidebar-nav-item link="/notifications" label="Notifications" icon="bell" [badge]="2" />
-      <app-sidebar-nav-item link="/settings" label="Settings" icon="gear" />
       <app-sidebar-nav-item link="/logout" label="Logout" icon="logout" />
     </nav>
     <div class="sidebar__user sidebar__user--drawer">
-      <div class="sidebar__user-avatar"></div>
-      <div class="sidebar__user-name">Michael Smith</div>
-      <div class="sidebar__user-email">michaelsmith12&#64;gmail.com</div>
+      <div class="sidebar__user-avatar">
+        @if (loadingUser()) {
+          <span class="sidebar__user-loading">...</span>
+        } @else if (user()) {
+          <span class="sidebar__user-initials">{{ getUserInitials() }}</span>
+        } @else {
+          <span class="sidebar__user-initials">U</span>
+        }
+      </div>
+      @if (user(); as u) {
+        <div class="sidebar__user-name">{{ u.email.split('@')[0] }}</div>
+        <div class="sidebar__user-email">{{ u.email }}</div>
+      } @else {
+        <div class="sidebar__user-name">Usuario</div>
+        <div class="sidebar__user-email">Cargando...</div>
+      }
     </div>
   </div>
 
@@ -49,22 +56,29 @@
       <span class="sidebar__logo-text">Live Menu</span>
     </div>
     <nav class="sidebar__nav">
-      <app-sidebar-nav-item link="/" label="Home" icon="home" [exact]="true" />
-      <app-sidebar-nav-item link="/dashboard" label="Dashboard" icon="dashboard" />
       <app-sidebar-nav-item link="/restaurants" label="My Restaurants" icon="building" />
       <app-sidebar-nav-item link="/analytics" label="Analytics" icon="chart" [showArrow]="true" />
-      <app-sidebar-nav-item link="/schedules" label="Schedules" icon="calendar" [showPlus]="true" [badge]="2" />
     </nav>
     <nav class="sidebar__nav sidebar__nav--secondary">
-      <app-sidebar-nav-item link="/messages" label="Messages" icon="message" [badge]="2" />
-      <app-sidebar-nav-item link="/notifications" label="Notifications" icon="bell" [badge]="2" />
-      <app-sidebar-nav-item link="/settings" label="Settings" icon="gear" />
       <app-sidebar-nav-item link="/logout" label="Logout" icon="logout" />
     </nav>
     <div class="sidebar__user">
-      <div class="sidebar__user-avatar"></div>
-      <div class="sidebar__user-name">Michael Smith</div>
-      <div class="sidebar__user-email">michaelsmith12&#64;gmail.com</div>
+      <div class="sidebar__user-avatar">
+        @if (loadingUser()) {
+          <span class="sidebar__user-loading">...</span>
+        } @else if (user()) {
+          <span class="sidebar__user-initials">{{ getUserInitials() }}</span>
+        } @else {
+          <span class="sidebar__user-initials">U</span>
+        }
+      </div>
+      @if (user(); as u) {
+        <div class="sidebar__user-name">{{ u.email.split('@')[0] }}</div>
+        <div class="sidebar__user-email">{{ u.email }}</div>
+      } @else {
+        <div class="sidebar__user-name">Usuario</div>
+        <div class="sidebar__user-email">Cargando...</div>
+      }
     </div>
   </div>
 </aside>

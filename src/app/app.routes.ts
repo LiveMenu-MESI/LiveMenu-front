@@ -24,11 +24,20 @@ export const routes: Routes = [
       import('./features/auth/logout/logout.component').then((m) => m.LogoutComponent),
   },
   {
+    path: 'm/:slug',
+    loadComponent: () =>
+      import('./features/public-menu/public-menu.component').then((m) => m.PublicMenuComponent),
+  },
+  {
     path: '',
     component: MainLayoutComponent,
     canActivate: [authGuard],
     children: [
-      { path: '', pathMatch: 'full', redirectTo: 'restaurants' },
+      {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: 'restaurants',
+      },
       {
         path: 'restaurants',
         loadComponent: () =>
@@ -40,9 +49,9 @@ export const routes: Routes = [
           import('./features/restaurant-menu/restaurant-menu.component').then((m) => m.RestaurantMenuComponent),
       },
       {
-        path: 'dashboard',
+        path: 'analytics',
         loadComponent: () =>
-          import('./features/restaurants/restaurants.component').then((m) => m.RestaurantsComponent),
+          import('./features/analytics/analytics.component').then((m) => m.AnalyticsComponent),
       },
       {
         path: '**',

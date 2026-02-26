@@ -21,10 +21,46 @@
     }
   }
 
+  &__actions {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+  }
+
+  &__btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #0d6efd;
+    background: #fff;
+    border: 1px solid #0d6efd;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-family: inherit;
+
+    &:hover {
+      background: #f0f7ff;
+    }
+
+    @media (min-width: 480px) {
+      font-size: 0.9375rem;
+    }
+  }
+
   &__profile-link {
     font-size: 0.875rem;
     color: #0d6efd;
     text-decoration: none;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font-family: inherit;
+
+    &:hover {
+      text-decoration: underline;
+    }
 
     @media (min-width: 480px) {
       font-size: 0.9375rem;
@@ -39,5 +75,13 @@
     @media (min-width: 480px) {
       font-size: 0.9375rem;
     }
+  }
+
+  &__qr {
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
   }
 }

@@ -1,0 +1,84 @@
+<div class="public-menu">
+  @if (loading()) {
+    <div class="public-menu__loading">
+      <p>Cargando menú...</p>
+    </div>
+  } @else if (error()) {
+    <div class="public-menu__error">
+      <h1>Error</h1>
+      <p>{{ error() }}</p>
+    </div>
+  } @else if (menu()) {
+    @if (restaurant(); as rest) {
+      <header class="public-menu__header">
+        @if (rest.logo) {
+          <img [src]="rest.logo" [alt]="rest.name" class="public-menu__logo" />
+        }
+        <h1 class="public-menu__title">{{ rest.name }}</h1>
+        @if (rest.description) {
+          <p class="public-menu__description">{{ rest.description }}</p>
+        }
+        @if (rest.phone || rest.address) {
+          <div class="public-menu__contact">
+            @if (rest.phone) {
+              <p class="public-menu__phone">📞 {{ rest.phone }}</p>
+            }
+            @if (rest.address) {
+              <p class="public-menu__address">📍 {{ rest.address }}</p>
+            }
+          </div>
+        }
+      </header>
+    }
+
+    <main class="public-menu__content">
+      @for (category of categories(); track category.id) {
+        <section class="public-menu__category">
+          <h2 class="public-menu__category-title">{{ category.name }}</h2>
+          @if (category.description) {
+            <p class="public-menu__category-description">{{ category.description }}</p>
+          }
+
+          <div class="public-menu__dishes">
+            @for (dish of category.dishes; track dish.id) {
+              <article class="public-menu__dish">
+                @if (dish.imageUrl) {
+                  <img [src]="dish.imageUrl" [alt]="dish.name" class="public-menu__dish-image" />
+                }
+                <div class="public-menu__dish-content">
+                  <div class="public-menu__dish-header">
+                    <h3 class="public-menu__dish-name">
+                      {{ dish.name }}
+                      @if (dish.featured) {
+                        <span class="public-menu__dish-featured">⭐</span>
+                      }
+                    </h3>
+                    <div class="public-menu__dish-price">
+                      @if (dish.offerPrice) {
+                        <span class="public-menu__dish-price--old">${{ dish.price.toFixed(2) }}</span>
+                        <span class="public-menu__dish-price--offer">${{ dish.offerPrice.toFixed(2) }}</span>
+                      } @else {
+                        <span>${{ dish.price.toFixed(2) }}</span>
+                      }
+                    </div>
+                  </div>
+                  @if (dish.description) {
+                    <p class="public-menu__dish-description">{{ dish.description }}</p>
+                  }
+                  @if (dish.tags && dish.tags.length > 0) {
+                    <div class="public-menu__dish-tags">
+                      @for (tag of dish.tags; track tag) {
+                        <span class="public-menu__dish-tag">{{ tag }}</span>
+                      }
+                    </div>
+                  }
+                </div>
+              </article>
+            }
+          </div>
+        </section>
+      }
+    </main>
+  }
+</div>
+

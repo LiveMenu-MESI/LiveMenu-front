@@ -1,0 +1,11 @@
+<div class="notifications">
+  @for (notification of notifications(); track notification.id) {
+    <div class="notification notification--{{ notification.type }}" (click)="remove(notification.id)">
+      <span class="notification__message">{{ notification.message }}</span>
+      <button type="button" class="notification__close" (click)="remove(notification.id); $event.stopPropagation()" aria-label="Cerrar">
+        ×
+      </button>
+    </div>
+  }
+</div>
+

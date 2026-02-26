@@ -1,11 +1,31 @@
-<div class="opening-hours">
-  @for (day of days; track day) {
-    <div class="opening-hours__row">
-      <span class="opening-hours__day">{{ day }}</span>
-      <span class="opening-hours__closed">Cerrado</span>
-      <span class="opening-hours__sep">-</span>
-      <input type="text" class="opening-hours__input" placeholder="--:--" readonly />
-      <input type="text" class="opening-hours__input" placeholder="--:--" readonly />
+<div class="opening-hours" [formGroup]="scheduleGroup()">
+  @for (day of days; track day.key) {
+    <div class="opening-hours__row" [formGroupName]="day.key">
+      <span class="opening-hours__day">{{ day.label }}</span>
+      <label class="opening-hours__closed-label">
+        <input type="checkbox" formControlName="closed" class="opening-hours__checkbox" />
+        <span class="opening-hours__closed-text">Cerrado</span>
+      </label>
+      @if (!scheduleGroup().get(day.key)?.get('closed')?.value) {
+        <span class="opening-hours__sep">-</span>
+        <input
+          type="time"
+          formControlName="open"
+          class="opening-hours__input"
+          title="Apertura"
+          [class.opening-hours__input--error]="scheduleGroup().get(day.key)?.errors?.['requiredSchedule']"
+        />
+        <input
+          type="time"
+          formControlName="close"
+          class="opening-hours__input"
+          title="Cierre"
+          [class.opening-hours__input--error]="scheduleGroup().get(day.key)?.errors?.['requiredSchedule']"
+        />
+      }
+      @if (scheduleGroup().get(day.key)?.errors?.['requiredSchedule'] && scheduleGroup().get(day.key)?.touched) {
+        <span class="opening-hours__error">Hora de apertura y cierre son obligatorias</span>
+      }
     </div>
   }
 </div>

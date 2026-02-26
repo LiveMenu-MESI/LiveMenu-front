@@ -14,7 +14,6 @@ const BUILDING_ICON =
 })
 export class RestaurantCardComponent {
   restaurant = input.required<Restaurant>();
-  edit = output<void>();
   delete = output<void>();
   buildingIcon = BUILDING_ICON;
 }

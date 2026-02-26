@@ -30,6 +30,10 @@ export class CategoryFormModalComponent implements OnInit {
     return !!this.category();
   }
 
+  get nameControl() {
+    return this.form.get('name');
+  }
+
   ngOnInit(): void {
     const cat = this.category();
     if (cat) {
@@ -38,6 +42,7 @@ export class CategoryFormModalComponent implements OnInit {
   }
 
   onSubmit(): void {
+    this.form.updateValueAndValidity();
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;

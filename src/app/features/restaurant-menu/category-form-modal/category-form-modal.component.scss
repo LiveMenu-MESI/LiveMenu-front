@@ -17,6 +17,17 @@
   border: 1px solid #dee2e6;
   border-radius: 6px;
   box-sizing: border-box;
+
+  &--error {
+    border-color: #dc3545;
+  }
+}
+
+.category-form-modal__error {
+  font-size: 0.8125rem;
+  color: #dc3545;
+  margin-top: 0.25rem;
+  display: block;
 }
 
 .category-form-modal__textarea {

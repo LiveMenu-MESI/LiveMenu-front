@@ -6,8 +6,23 @@
   <form (ngSubmit)="onSubmit()" [formGroup]="form">
     <div class="category-form-modal__field">
       <label class="category-form-modal__label">Nombre *</label>
-      <input type="text" formControlName="name" class="category-form-modal__input" />
-      <span class="category-form-modal__hint">Máximo 50 caracteres</span>
+      <input
+        type="text"
+        formControlName="name"
+        class="category-form-modal__input"
+        [class.category-form-modal__input--error]="nameControl?.invalid && nameControl?.touched"
+      />
+      @if (nameControl?.invalid && nameControl?.touched) {
+        <span class="category-form-modal__error">
+          @if (nameControl?.errors?.['required']) {
+            El nombre de la categoría es obligatorio.
+          } @else if (nameControl?.errors?.['maxlength']) {
+            Máximo 50 caracteres.
+          }
+        </span>
+      } @else {
+        <span class="category-form-modal__hint">Máximo 50 caracteres</span>
+      }
     </div>
     <div class="category-form-modal__field">
       <label class="category-form-modal__label">Descripción</label>

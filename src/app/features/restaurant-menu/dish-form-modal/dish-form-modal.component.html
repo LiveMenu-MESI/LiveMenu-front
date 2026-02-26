@@ -1,0 +1,142 @@
+<app-modal
+  [title]="isEdit ? 'Editar Platillo' : 'Nuevo Platillo'"
+  (closed)="onCancel()"
+>
+  <form (ngSubmit)="onSubmit()" [formGroup]="form" class="dish-form">
+    <div class="dish-form__image-section">
+      <div class="dish-form__image-preview">
+        @if (form.get('imageUrl')?.value) {
+          <img [src]="form.get('imageUrl')?.value" alt="" class="dish-form__image-img" />
+          @if (!deleting()) {
+            <button type="button" class="dish-form__image-delete" (click)="onDeleteImage()" aria-label="Eliminar imagen">
+              ×
+            </button>
+          }
+        } @else {
+          <span class="dish-form__image-icon" [innerHTML]="cutleryIcon"></span>
+        }
+        @if (uploading()) {
+          <div class="dish-form__image-uploading">Subiendo...</div>
+        }
+        @if (deleting()) {
+          <div class="dish-form__image-uploading">Eliminando...</div>
+        }
+      </div>
+      <div class="dish-form__image-actions">
+        <label class="dish-form__btn-upload" [class.dish-form__btn-upload--disabled]="uploading()">
+          <span class="dish-form__btn-upload-icon" [innerHTML]="uploadIcon"></span>
+          Subir Imagen
+          <input
+            type="file"
+            accept="image/jpeg,image/jpg,image/png,image/webp"
+            (change)="onFileSelected($event)"
+            class="dish-form__file-input"
+            [disabled]="uploading()"
+          />
+        </label>
+        @if (uploadError()) {
+          <p class="dish-form__error">{{ uploadError() }}</p>
+        }
+        <p class="dish-form__hint">Formato: JPG, PNG, WebP. Máximo 5MB. Recomendado: 800×600px</p>
+        <span class="dish-form__divider">o</span>
+        <input
+          type="url"
+          formControlName="imageUrl"
+          class="dish-form__input dish-form__image-url"
+          placeholder="Pega la URL de la imagen"
+          [disabled]="uploading()"
+        />
+      </div>
+    </div>
+
+    <div class="dish-form__field">
+      <label class="dish-form__label">Nombre del Platillo *</label>
+      <input type="text" formControlName="name" class="dish-form__input" placeholder="Ej: Ensalada César" [class.dish-form__input--error]="nameControl?.invalid && nameControl?.touched" />
+      @if (nameControl?.invalid && nameControl?.touched) {
+        <span class="dish-form__error">
+          @if (nameControl?.errors?.['required']) {
+            El nombre del platillo es obligatorio.
+          } @else if (nameControl?.errors?.['maxlength']) {
+            Máximo 100 caracteres.
+          }
+        </span>
+      }
+    </div>
+
+    <div class="dish-form__field">
+      <label class="dish-form__label">Categoría *</label>
+      <select formControlName="categoryId" class="dish-form__input dish-form__select" [class.dish-form__input--error]="categoryIdControl?.invalid && categoryIdControl?.touched">
+        <option value="">Seleccione una categoría</option>
+        @for (cat of categories(); track cat.id) {
+          <option [value]="cat.id">{{ cat.name }}</option>
+        }
+      </select>
+      @if (categoryIdControl?.invalid && categoryIdControl?.touched) {
+        <span class="dish-form__error">Seleccione una categoría.</span>
+      }
+    </div>
+
+    <div class="dish-form__row">
+      <div class="dish-form__field">
+        <label class="dish-form__label">Precio *</label>
+        <input type="number" formControlName="price" class="dish-form__input" min="0.01" step="0.01" [class.dish-form__input--error]="priceControl?.invalid && priceControl?.touched" />
+        @if (priceControl?.invalid && priceControl?.touched) {
+          <span class="dish-form__error">
+            @if (priceControl?.errors?.['required']) {
+              El precio es obligatorio.
+            } @else if (priceControl?.errors?.['min'] || priceControl?.errors?.['priceMin']) {
+              El precio debe ser mayor a 0.
+            }
+          </span>
+        }
+      </div>
+      <div class="dish-form__field">
+        <label class="dish-form__label">Precio de Oferta</label>
+        <input type="number" formControlName="offerPrice" class="dish-form__input" min="0" step="0.01" />
+      </div>
+    </div>
+
+    <div class="dish-form__field">
+      <label class="dish-form__label">Descripción</label>
+      <textarea formControlName="description" class="dish-form__input dish-form__textarea" rows="3" placeholder="Ingredientes y detalles del platillo" [class.dish-form__input--error]="descriptionControl?.invalid && descriptionControl?.touched"></textarea>
+      <span class="dish-form__hint">Máximo 300 caracteres</span>
+      @if (descriptionControl?.invalid && descriptionControl?.touched && descriptionControl?.errors?.['maxlength']) {
+        <span class="dish-form__error">Máximo 300 caracteres.</span>
+      }
+    </div>
+
+    <div class="dish-form__field">
+      <label class="dish-form__label">Etiquetas</label>
+      <div class="dish-form__tags-row">
+        <input type="text" class="dish-form__input" [(ngModel)]="tagInput" [ngModelOptions]="{standalone: true}" placeholder="vegetariano, picante, sin gluten..." (keydown.enter)="$event.preventDefault(); addTag()" />
+        <button type="button" class="dish-form__btn-add" (click)="addTag()">Agregar</button>
+      </div>
+      @if (tagsList.length) {
+        <div class="dish-form__tags-list">
+          @for (tag of tagsList; track $index) {
+            <span class="dish-form__tag">
+              {{ tag }}
+              <button type="button" class="dish-form__tag-remove" (click)="removeTag($index)" aria-label="Quitar">×</button>
+            </span>
+          }
+        </div>
+      }
+    </div>
+
+    <div class="dish-form__options">
+      <label class="dish-form__toggle">
+        <input type="checkbox" formControlName="available" />
+        <span class="dish-form__toggle-label">Disponible</span>
+      </label>
+      <label class="dish-form__toggle">
+        <input type="checkbox" formControlName="featured" />
+        <span class="dish-form__toggle-label">Destacado</span>
+      </label>
+    </div>
+
+    <div class="dish-form__actions">
+      <button type="button" class="dish-form__btn dish-form__btn--secondary" (click)="onCancel()">Cancelar</button>
+      <button type="submit" class="dish-form__btn dish-form__btn--primary">{{ isEdit ? 'Guardar Platillo' : 'Crear Platillo' }}</button>
+    </div>
+  </form>
+</app-modal>

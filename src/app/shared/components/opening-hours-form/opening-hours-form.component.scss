@@ -16,9 +16,22 @@
     color: #212529;
   }
 
-  &__closed {
+  &__closed-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
     font-size: 0.875rem;
     color: #6c757d;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  &__checkbox {
+    cursor: pointer;
+  }
+
+  &__closed-text {
+    font-size: 0.875rem;
   }
 
   &__sep {
@@ -27,16 +40,26 @@
   }
 
   &__input {
-    width: 70px;
+    width: 100px;
     padding: 0.375rem 0.5rem;
     font-size: 0.875rem;
     border: 1px solid #dee2e6;
     border-radius: 4px;
-    background: #f8f9fa;
-    color: #6c757d;
+    color: #212529;
 
     &::placeholder {
       color: #adb5bd;
     }
+
+    &--error {
+      border-color: #dc3545;
+    }
+  }
+
+  &__error {
+    font-size: 0.8125rem;
+    color: #dc3545;
+    width: 100%;
+    margin-top: 0.25rem;
   }
 }

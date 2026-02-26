@@ -18,6 +18,7 @@
     height: 80px;
     min-width: 80px;
     border-radius: 8px;
+    position: relative;
 
     @media (min-width: 480px) {
       width: 120px;
@@ -28,6 +29,43 @@
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+
+  &__uploading {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+    border-radius: 8px;
+    z-index: 1;
+  }
+
+  &__delete {
+    position: absolute;
+    top: 0.25rem;
+    right: 0.25rem;
+    width: 24px;
+    height: 24px;
+    background: rgba(220, 53, 69, 0.9);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    font-size: 1.25rem;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background: #dc3545;
+    }
   }
 
   &__icon {
@@ -43,8 +81,26 @@
     }
   }
 
+  &__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: inherit;
+  }
+
   &__actions {
     flex: 1;
+    min-width: 0;
+  }
+
+  &__input {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.9375rem;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    box-sizing: border-box;
+    margin-bottom: 0.35rem;
   }
 
   &__button {
@@ -79,5 +135,63 @@
     margin: 0;
     font-size: 0.8125rem;
     color: #6c757d;
+  }
+
+  &__upload-section {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.5rem;
+  }
+
+  &__file-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: #0d6efd;
+    background: #fff;
+    border: 1px solid #0d6efd;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background: #f0f7ff;
+    }
+
+    &:has(input:disabled) {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
+  &__file-icon {
+    display: inline-flex;
+    width: 1rem;
+    height: 1rem;
+
+    ::ng-deep svg {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  &__file-input {
+    display: none;
+  }
+
+  &__divider {
+    color: #6c757d;
+    font-size: 0.875rem;
+  }
+
+  &__error {
+    margin: 0.25rem 0;
+    font-size: 0.8125rem;
+    color: #dc3545;
   }
 }
