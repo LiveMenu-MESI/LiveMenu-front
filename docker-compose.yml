@@ -1,6 +1,6 @@
 # Despliegue: frontend en https://livemenu.naing.co, API en https://api.naing.co
 # Uso: docker compose up --build -d
-# Con proxy inverso (HTTPS): exponer puerto 80 y dejar que nginx/caddy hagan TLS.
+# Puerto 4200 en el host (evita conflicto con otro servicio en :80). Para usar :80: docker compose up --build -p 80:80
 services:
   frontend:
     build:
@@ -9,7 +9,7 @@ services:
         API_URL: ${API_URL:-https://api.naing.co}
         FRONTEND_URL: ${FRONTEND_URL:-https://livemenu.naing.co}
     ports:
-      - "80:80"
+      - "4200:80"
     restart: unless-stopped
     # Para otra API en build: API_URL=https://otra-api.ejemplo.com docker compose up --build
 
