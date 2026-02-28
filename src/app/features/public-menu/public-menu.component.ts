@@ -1,7 +1,8 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { PublicMenuService, type PublicMenuResponse } from '../../core/services/public-menu.service';
+import { PublicMenuService, type PublicMenuResponse, type PublicMenuDish } from '../../core/services/public-menu.service';
+import { getHttpErrorMessage } from '../../core/utils/http-error.utils';
 
 const SCHEDULE_DAYS: { key: string; label: string; short: string }[] = [
   { key: 'monday', label: 'Lunes', short: 'L' },
@@ -46,6 +47,7 @@ function isCurrentlyOpen(open?: string, close?: string): boolean {
 })
 export class PublicMenuComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly publicMenuService = inject(PublicMenuService);
 
   menu = signal<PublicMenuResponse | null>(null);
@@ -75,7 +77,7 @@ export class PublicMenuComponent implements OnInit {
         this.loading.set(false);
       },
       error: (err) => {
-        this.error.set(err.error?.message || 'Error al cargar el menú');
+        this.error.set(getHttpErrorMessage(err, 'Error al cargar el menú'));
         this.loading.set(false);
       },
     });
@@ -84,8 +86,31 @@ export class PublicMenuComponent implements OnInit {
   restaurant = signal<PublicMenuResponse['restaurant'] | null>(null);
   categories = signal<PublicMenuResponse['categories']>([]);
 
+  /** Filtro de categoría: null = Todos, si no id de categoría */
+  selectedCategoryId = signal<string | null>(null);
+
   /** Índice del día actual para resaltar en la semana */
   readonly todayIndex = getTodayIndex();
+
+  /** Platos a mostrar en el grid (según categoría seleccionada) */
+  getFilteredDishes(): PublicMenuResponse['categories'][0]['dishes'] {
+    const cats = this.categories();
+    const id = this.selectedCategoryId();
+    if (!id) return cats.flatMap((c) => c.dishes);
+    const cat = cats.find((c) => c.id === id);
+    return cat?.dishes ?? [];
+  }
+
+  selectCategory(categoryId: string | null): void {
+    this.selectedCategoryId.set(categoryId);
+  }
+
+  /**
+   * Navega al detalle del plato (esa página llama GET dish y registra la métrica).
+   */
+  onDishClick(slug: string, dish: PublicMenuDish): void {
+    this.router.navigate(['/m', slug, 'dish', dish.id]);
+  }
 
   /**
    * Devuelve los horarios para la vista innovadora: día, texto, si es hoy y si está abierto ahora.

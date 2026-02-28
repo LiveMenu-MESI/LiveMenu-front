@@ -4,6 +4,7 @@ import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../core/services/auth.service';
 import { API_CONSTANTS } from '../../../core/constants/api.constants';
+import { getHttpErrorMessage } from '../../../core/utils/http-error.utils';
 import { HttpClient } from '@angular/common/http';
 
 const LOGO_ICON = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>';
@@ -86,7 +87,7 @@ export class SignupComponent {
       },
       error: (error) => {
         this.isLoading = false;
-        this.errorMessage = error.error?.message || 'Error al crear la cuenta. Intenta nuevamente.';
+        this.errorMessage = getHttpErrorMessage(error, 'Error al crear la cuenta. Intenta nuevamente.');
       },
     });
   }

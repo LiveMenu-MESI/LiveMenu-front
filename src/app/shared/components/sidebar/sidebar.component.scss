@@ -210,6 +210,16 @@
     }
   }
 
+  /* Subnivel: Gestionar menú y Ver menú (jerarquía bajo Mis restaurantes) */
+  &__nav-sub {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    padding-left: 1.25rem;
+    margin: 0.25rem 0;
+    border-left: 2px solid var(--lm-border);
+  }
+
   &__user {
     display: none;
     padding: 1rem;

@@ -11,6 +11,7 @@ import { RestaurantApiService } from '../../core/services/restaurant-api.service
 import { CategoryApiService } from '../../core/services/category-api.service';
 import { DishApiService } from '../../core/services/dish-api.service';
 import { NotificationService } from '../../core/services/notification.service';
+import { getHttpErrorMessage } from '../../core/utils/http-error.utils';
 import type { RestaurantResponseDto, RestaurantUpdateDto } from '../../core/models/restaurant-api.model';
 import type { CategoryResponseDto } from '../../core/models/category-api.model';
 import type { DishResponseDto } from '../../core/models/dish-api.model';
@@ -85,7 +86,7 @@ export class RestaurantMenuComponent implements OnInit {
           }
         },
         error: (err) => {
-          this.error.set(err?.message ?? 'Error al cargar el restaurante');
+          this.error.set(getHttpErrorMessage(err, 'Error al cargar el restaurante'));
           this.loading.set(false);
         },
       });
@@ -98,8 +99,8 @@ export class RestaurantMenuComponent implements OnInit {
         this.loadDishCounts(restaurantId, list);
         this.loading.set(false);
       },
-      error: (err: { message?: string }) => {
-        this.error.set(err?.message ?? 'Error al cargar categorías');
+      error: (err) => {
+        this.error.set(getHttpErrorMessage(err, 'Error al cargar categorías'));
         this.loading.set(false);
       },
     });
@@ -156,10 +157,8 @@ export class RestaurantMenuComponent implements OnInit {
         this.loadCategories(restId);
         this.notificationService.success('Categoría eliminada correctamente');
       },
-      error: (err: { message?: string }) => {
-        const message = err?.message ?? 'Error al eliminar categoría';
-        this.error.set(message);
-        this.notificationService.error(message);
+      error: (err) => {
+        this.error.set(getHttpErrorMessage(err, 'Error al eliminar categoría'));
       },
     });
   }
@@ -184,10 +183,8 @@ export class RestaurantMenuComponent implements OnInit {
           this.editingCategory.set(null);
           this.notificationService.success('Categoría actualizada correctamente');
         },
-        error: (err: { message?: string }) => {
-          const message = err?.message ?? 'Error al actualizar categoría';
-          this.error.set(message);
-          this.notificationService.error(message);
+        error: (err) => {
+          this.error.set(getHttpErrorMessage(err, 'Error al actualizar categoría'));
         },
       });
     } else {
@@ -198,10 +195,8 @@ export class RestaurantMenuComponent implements OnInit {
           this.editingCategory.set(null);
           this.notificationService.success('Categoría creada correctamente');
         },
-        error: (err: { message?: string }) => {
-          const message = err?.message ?? 'Error al crear categoría';
-          this.error.set(message);
-          this.notificationService.error(message);
+        error: (err) => {
+          this.error.set(getHttpErrorMessage(err, 'Error al crear categoría'));
         },
       });
     }
@@ -243,10 +238,8 @@ export class RestaurantMenuComponent implements OnInit {
           this.editingDish.set(null);
           this.notificationService.success('Platillo actualizado correctamente');
         },
-        error: (err: { message?: string }) => {
-          const message = err?.message ?? 'Error al actualizar platillo';
-          this.error.set(message);
-          this.notificationService.error(message);
+        error: (err) => {
+          this.error.set(getHttpErrorMessage(err, 'Error al actualizar platillo'));
         },
       });
     } else {
@@ -268,10 +261,8 @@ export class RestaurantMenuComponent implements OnInit {
           this.editingDish.set(null);
           this.notificationService.success('Platillo creado correctamente');
         },
-        error: (err: { message?: string }) => {
-          const message = err?.message ?? 'Error al crear platillo';
-          this.error.set(message);
-          this.notificationService.error(message);
+        error: (err) => {
+          this.error.set(getHttpErrorMessage(err, 'Error al crear platillo'));
         },
       });
     }
@@ -300,9 +291,7 @@ export class RestaurantMenuComponent implements OnInit {
         this.notificationService.success('Restaurante actualizado correctamente');
       },
       error: (err) => {
-        const message = err?.message ?? 'Error al actualizar restaurante';
-        this.error.set(message);
-        this.notificationService.error(message);
+        this.error.set(getHttpErrorMessage(err, 'Error al actualizar restaurante'));
       },
     });
   }
@@ -330,11 +319,8 @@ export class RestaurantMenuComponent implements OnInit {
       next: () => {
         this.notificationService.success('Categorías reordenadas correctamente');
       },
-      error: (err: { message?: string }) => {
-        // Si falla, recargar categorías para restaurar el orden original
-        const message = err?.message ?? 'Error al reordenar categorías';
-        this.error.set(message);
-        this.notificationService.error(message);
+      error: (err) => {
+        this.error.set(getHttpErrorMessage(err, 'Error al reordenar categorías'));
         this.loadCategories(restId);
       },
     });

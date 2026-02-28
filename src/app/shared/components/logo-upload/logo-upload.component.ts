@@ -2,6 +2,7 @@ import { Component, input, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import type { AbstractControl } from '@angular/forms';
 import { ImageUploadService } from '../../../core/services/image-upload.service';
+import { getHttpErrorMessage } from '../../../core/utils/http-error.utils';
 
 const BUILDING_ICON =
   '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#0d6efd" stroke-width="1.5"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-4h6v4"/><path d="M9 17h6"/></svg>';
@@ -88,9 +89,7 @@ export class LogoUploadComponent {
         this.uploading.set(false);
       },
       error: (err) => {
-        console.error('Upload error:', err);
-        const errorMessage = err.error?.message || err.message || 'Error al subir la imagen';
-        this.uploadError.set(errorMessage);
+        this.uploadError.set(getHttpErrorMessage(err, 'Error al subir la imagen'));
         this.uploading.set(false);
       },
     });
@@ -120,7 +119,7 @@ export class LogoUploadComponent {
         this.deleting.set(false);
       },
       error: (err) => {
-        this.uploadError.set(err.error?.message || 'Error al eliminar la imagen');
+        this.uploadError.set(getHttpErrorMessage(err, 'Error al eliminar la imagen'));
         this.deleting.set(false);
       },
     });

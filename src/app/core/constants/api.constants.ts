@@ -95,6 +95,11 @@ export function getPublicMenuUrl(slug: string): string {
   return `${BASE_URL}${API_CONSTANTS.API_PREFIX}/public/menu/${slug}`;
 }
 
+/** Plato público (para métricas por platillo): GET /api/v1/public/menu/:slug/dishes/:dishId */
+export function getPublicDishUrl(slug: string, dishId: string): string {
+  return `${BASE_URL}${API_CONSTANTS.API_PREFIX}/public/menu/${slug}/dishes/${dishId}`;
+}
+
 /** Info de QR: GET /api/v1/admin/restaurants/:restaurantId/qr */
 export function getQrInfoUrl(restaurantId: string): string {
   return `${BASE_URL}${API_CONSTANTS.API_PREFIX}${API_CONSTANTS.ENDPOINTS.restaurantById(restaurantId)}/qr`;

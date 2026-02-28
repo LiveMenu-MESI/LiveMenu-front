@@ -16,7 +16,7 @@
         </p>
         <div class="qr-display__url">
           <label>URL del menú:</label>
-          <code class="qr-display__url-text">{{ frontendMenuUrl() || qrInfo()!.publicMenuUrl }}</code>
+          <code class="qr-display__url-text">{{ getDisplayMenuUrl() }}</code>
         </div>
       </div>
 
@@ -49,20 +49,6 @@
           </select>
         </div>
 
-        <div class="qr-display__option">
-          <label for="qr-format">Formato:</label>
-          <select id="qr-format" [value]="selectedFormat" (change)="onFormatChange($any($event.target).value)">
-            <option value="PNG">PNG</option>
-            <option value="SVG">SVG</option>
-          </select>
-        </div>
-
-        <div class="qr-display__option">
-          <label>
-            <input type="checkbox" [checked]="includeLogo" (change)="onLogoToggle($any($event.target).checked)" />
-            Incluir logo
-          </label>
-        </div>
       </div>
 
       <div class="qr-display__actions">

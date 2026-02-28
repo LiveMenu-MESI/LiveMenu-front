@@ -1,4 +1,4 @@
-// Figma WebPage design tokens
+// Same Figma style as public menu (internal preview)
 $color-text: #324054;
 $color-text-muted: #71839b;
 $color-primary: #2d68fe;
@@ -11,8 +11,8 @@ $radius-card: 10px;
 $radius-dish: 14px;
 $font-heading: 'Arimo', -apple-system, BlinkMacSystemFont, sans-serif;
 
-.public-menu {
-  min-height: 100vh;
+.menu-preview {
+  min-height: 100%;
   background: $color-bg-content;
   font-family: $font-heading;
 
@@ -26,135 +26,137 @@ $font-heading: 'Arimo', -apple-system, BlinkMacSystemFont, sans-serif;
     color: #dc3545;
   }
 
-  // ----- Hero: centrado, descripción, ubicación y horarios -----
   &__header {
-    background: linear-gradient(180deg, #fff 0%, #f8fafc 100%);
-    border-bottom: 1px solid $color-border;
-    padding: 0 0 24px 0;
-  }
-
-  &__hero {
-    display: flex;
-    justify-content: center;
-    padding: 40px 24px 32px;
-  }
-
-  &__hero-inner {
-    text-align: center;
-    max-width: 520px;
-    width: 100%;
-  }
-
-  &__hero-logo {
-    width: 88px;
-    height: 88px;
-    object-fit: contain;
-    border-radius: 16px;
-    margin-bottom: 16px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  }
-
-  &__hero-title {
-    font-size: 28px;
-    font-weight: 700;
-    line-height: 1.25;
-    color: $color-text;
-    margin: 0 0 12px 0;
-    letter-spacing: -0.02em;
-  }
-
-  &__hero-desc {
-    font-size: 16px;
-    line-height: 1.5;
-    color: $color-text-muted;
-    margin: 0 0 12px 0;
-  }
-
-  &__hero-address {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    font-size: 15px;
-    color: $color-text-muted;
-    margin: 0 0 24px 0;
-    padding: 8px 16px;
-    background: rgba(45, 104, 254, 0.06);
-    border-radius: 12px;
-    border: 1px solid rgba(45, 104, 254, 0.15);
-  }
-
-  &__hero-address-icon {
-    font-size: 1.1em;
-  }
-
-  // ----- Horarios debajo del menú -----
-  &__schedule-footer {
-    display: flex;
-    justify-content: center;
-    padding: 48px 24px 56px;
-    background: linear-gradient(0deg, #f8fafc 0%, #fff 100%);
-  }
-
-  &__schedule-card {
     background: #fff;
-    border-radius: 20px;
-    padding: 24px 28px;
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(0, 0, 0, 0.04);
-    text-align: center;
-    margin: 0 auto;
-    max-width: 520px;
-    width: 100%;
+    border-bottom: 1px solid $color-border;
+    padding: 24px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
   }
 
-  &__schedule-card-header {
+  &__header-inner {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 16px;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
   }
 
-  &__schedule-card-icon {
-    font-size: 22px;
+  &__header-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
   }
 
-  &__schedule-card-title {
-    font-size: 18px;
+  &__title {
+    font-size: 30px;
     font-weight: 700;
+    line-height: 36px;
     color: $color-text;
     margin: 0;
+  }
+
+  &__subtitle {
+    font-size: 16px;
+    line-height: 24px;
+    color: $color-text-muted;
+    margin: 0;
+  }
+
+  &__restaurant-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 17px;
+    height: 66px;
+    min-width: 0;
+    background: #fff;
+    border: 1px solid $color-border;
+    border-radius: $radius-card;
+  }
+
+  &__restaurant-card-image,
+  &__restaurant-card-placeholder {
+    width: 40px;
+    height: 40px;
+    border-radius: $radius-card;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: #f3f4f6;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  &__restaurant-card-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
+  }
+
+  &__restaurant-card-name {
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 24px;
+    color: $color-text;
+    margin: 0;
+  }
+
+  &__restaurant-card-desc {
+    font-size: 12px;
+    line-height: 16px;
+    color: $color-text-muted;
+    margin: 0;
+  }
+
+  &__schedule {
+    background: #fff;
+    border: 1px solid $color-border;
+    border-radius: $radius-card;
+    padding: 20px 24px;
+    max-width: 560px;
+  }
+
+  &__schedule-footer {
+    margin: 24px auto 32px;
+    max-width: 560px;
+  }
+
+  &__schedule-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: $color-text;
+    margin: 0 0 12px 0;
   }
 
   &__schedule-now {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     gap: 6px;
-    margin-bottom: 18px;
-    padding-bottom: 18px;
+    margin-bottom: 16px;
+    padding-bottom: 16px;
     border-bottom: 1px dashed $color-border;
   }
 
   &__schedule-badge {
     display: inline-flex;
     align-items: center;
-    padding: 8px 16px;
+    padding: 6px 12px;
     border-radius: 999px;
     font-size: 14px;
     font-weight: 700;
-    letter-spacing: 0.02em;
-
     &--open {
-      background: linear-gradient(135deg, $color-badge-open 0%, #20c997 100%);
+      background: $color-badge-open;
       color: #fff;
-      box-shadow: 0 2px 12px rgba(25, 135, 84, 0.35);
     }
-
     &--closed {
-      background: linear-gradient(145deg, $color-badge-closed 0%, #495057 100%);
+      background: $color-badge-closed;
       color: #fff;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     }
   }
 
@@ -170,7 +172,7 @@ $font-heading: 'Arimo', -apple-system, BlinkMacSystemFont, sans-serif;
     padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
   }
 
   &__schedule-row {
@@ -178,19 +180,15 @@ $font-heading: 'Arimo', -apple-system, BlinkMacSystemFont, sans-serif;
     align-items: center;
     justify-content: space-between;
     gap: 16px;
-    padding: 12px 16px;
-    border-radius: 12px;
-    background: #f8fafc;
-    border: 1px solid transparent;
-    transition: background 0.2s, border-color 0.2s;
-
+    padding: 10px 14px;
+    border-radius: 8px;
+    background: #f9fafb;
+    border: 1px solid $color-border;
     &--today {
-      background: linear-gradient(135deg, rgba(45, 104, 254, 0.12) 0%, rgba(45, 104, 254, 0.06) 100%);
+      background: rgba(45, 104, 254, 0.08);
       border-color: $color-primary;
       font-weight: 600;
-      box-shadow: 0 0 0 1px rgba(45, 104, 254, 0.2);
-
-      .public-menu__schedule-day-time {
+      .menu-preview__schedule-day-time {
         color: $color-primary;
       }
     }
@@ -209,38 +207,10 @@ $font-heading: 'Arimo', -apple-system, BlinkMacSystemFont, sans-serif;
     word-break: break-word;
   }
 
-  // ----- Barra título menú -----
-  &__header-bar {
-    padding: 0 32px 8px;
-  }
-
-  &__header-text {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  &__title {
-    font-size: 24px;
-    font-weight: 700;
-    line-height: 1.3;
-    color: $color-text;
-    margin: 0;
-  }
-
-  &__subtitle {
-    font-size: 15px;
-    line-height: 1.4;
-    color: $color-text-muted;
-    margin: 0;
-  }
-
-  // ----- Category pills (Figma: CategoryNav) -----
   &__categories {
     display: flex;
     flex-wrap: wrap;
     gap: 12px;
-    padding: 0 32px 24px;
   }
 
   &__category-pill {
@@ -257,17 +227,14 @@ $font-heading: 'Arimo', -apple-system, BlinkMacSystemFont, sans-serif;
     font-size: 16px;
     cursor: pointer;
     transition: background 0.2s, color 0.2s, border-color 0.2s;
-
     &:hover {
       background: #f9fafb;
     }
-
     &--active {
       background: $color-primary;
       border-color: $color-primary;
       color: #fff;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.1);
-
       &:hover {
         background: #2563eb;
         border-color: #2563eb;
@@ -275,7 +242,6 @@ $font-heading: 'Arimo', -apple-system, BlinkMacSystemFont, sans-serif;
     }
   }
 
-  // ----- Content grid (Figma: dish cards) -----
   &__content {
     padding: 24px 32px 32px;
   }
@@ -295,8 +261,6 @@ $font-heading: 'Arimo', -apple-system, BlinkMacSystemFont, sans-serif;
     display: flex;
     flex-direction: column;
     transition: box-shadow 0.2s;
-    cursor: pointer;
-
     &:hover {
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     }
@@ -397,62 +361,42 @@ $font-heading: 'Arimo', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 @media (max-width: 1024px) {
-  .public-menu__grid {
+  .menu-preview__grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 768px) {
-  .public-menu {
-    &__hero {
-      padding: 28px 16px 24px;
+  .menu-preview {
+    &__header {
+      padding: 20px 16px;
     }
-
-    &__hero-title {
-      font-size: 24px;
+    &__header-inner {
+      flex-direction: column;
+      align-items: flex-start;
     }
-
-    &__hero-desc {
-      font-size: 15px;
+    &__restaurant-card {
+      width: 100%;
     }
-
-    &__schedule-footer {
-      padding: 32px 16px 40px;
-    }
-
-    &__schedule-card {
-      padding: 20px 18px;
-      border-radius: 16px;
-    }
-
-    &__header-bar {
-      padding: 0 16px 8px;
-    }
-
     &__title {
-      font-size: 20px;
+      font-size: 24px;
+      line-height: 30px;
     }
-
     &__subtitle {
       font-size: 14px;
     }
-
     &__categories {
-      padding: 0 16px 20px;
       overflow-x: auto;
       flex-wrap: nowrap;
-      padding-bottom: 12px;
+      padding-bottom: 4px;
       -webkit-overflow-scrolling: touch;
     }
-
     &__category-pill {
       flex-shrink: 0;
     }
-
     &__content {
       padding: 20px 16px;
     }
-
     &__grid {
       grid-template-columns: 1fr;
       gap: 16px;

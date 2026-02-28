@@ -28,8 +28,8 @@ if (fs.existsSync(envPath)) {
   });
 }
 
-const apiUrl = env.API_URL !== undefined ? String(env.API_URL) : 'http://api.naing.co:8080';
-const frontendUrl = env.FRONTEND_URL !== undefined ? String(env.FRONTEND_URL) : 'http://localhost:4200';
+const apiUrl = env.API_URL !== undefined ? String(env.API_URL) : 'https://api.naing.co';
+const frontendUrl = env.FRONTEND_URL !== undefined ? String(env.FRONTEND_URL) : 'https://livemenu.naing.co';
 const devRestaurantId = env.DEV_RESTAURANT_ID;
 
 const outDir = path.join(__dirname, '../src/app/core/generated');

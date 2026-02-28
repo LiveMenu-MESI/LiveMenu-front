@@ -3,11 +3,12 @@ import { Router, RouterOutlet, NavigationEnd } from '@angular/router';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { filter } from 'rxjs';
 import { SidebarComponent } from '../sidebar/sidebar.component';
+import { AdminHeaderComponent } from '../admin-header/admin-header.component';
 
 @Component({
   selector: 'app-main-layout',
   standalone: true,
-  imports: [RouterOutlet, SidebarComponent],
+  imports: [RouterOutlet, SidebarComponent, AdminHeaderComponent],
   templateUrl: './main-layout.component.html',
   styleUrl: './main-layout.component.scss',
   animations: [

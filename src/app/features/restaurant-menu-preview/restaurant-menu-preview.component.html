@@ -1,0 +1,105 @@
+<div class="menu-preview">
+  @if (loading()) {
+    <div class="menu-preview__loading">
+      <p>Cargando menú...</p>
+    </div>
+  } @else if (error()) {
+    <div class="menu-preview__error">
+      <h1>Error</h1>
+      <p>{{ error() }}</p>
+    </div>
+  } @else if (restaurant()) {
+    @let rest = restaurant()!;
+    <header class="menu-preview__header">
+      <nav class="menu-preview__categories" aria-label="Categorías del menú">
+        <button
+          type="button"
+          class="menu-preview__category-pill"
+          [class.menu-preview__category-pill--active]="!selectedCategoryId()"
+          (click)="selectCategory(null)"
+        >
+          Todos
+        </button>
+        @for (item of categories(); track item.category.id) {
+          <button
+            type="button"
+            class="menu-preview__category-pill"
+            [class.menu-preview__category-pill--active]="selectedCategoryId() === item.category.id"
+            (click)="selectCategory(item.category.id)"
+          >
+            {{ item.category.name }}
+          </button>
+        }
+      </nav>
+    </header>
+
+    <main class="menu-preview__content">
+      <div class="menu-preview__grid">
+        @for (dish of getFilteredDishes(); track dish.id) {
+          <article class="menu-preview__dish-card">
+            <div class="menu-preview__dish-card-image-wrap">
+              @if (dish.imageUrl) {
+                <img [src]="dish.imageUrl" [alt]="dish.name" class="menu-preview__dish-card-img" />
+              } @else {
+                <div class="menu-preview__dish-card-img-placeholder"></div>
+              }
+              @if (dish.featured) {
+                <span class="menu-preview__dish-card-popular">Popular</span>
+              }
+            </div>
+            <div class="menu-preview__dish-card-body">
+              <h3 class="menu-preview__dish-card-name">{{ dish.name }}</h3>
+              @if (dish.description) {
+                <p class="menu-preview__dish-card-description">{{ dish.description }}</p>
+              }
+              <div class="menu-preview__dish-card-price">
+                @if (dish.offerPrice != null) {
+                  <span class="menu-preview__dish-card-price-old">${{ dish.price.toFixed(2) }}</span>
+                  <span class="menu-preview__dish-card-price-current">${{ dish.offerPrice.toFixed(2) }}</span>
+                } @else {
+                  <span class="menu-preview__dish-card-price-current">${{ dish.price.toFixed(2) }}</span>
+                }
+              </div>
+              @if (dish.tags && dish.tags.length > 0) {
+                <div class="menu-preview__dish-card-tags">
+                  @for (tag of dish.tags; track tag) {
+                    <span class="menu-preview__dish-card-tag">{{ tag }}</span>
+                  }
+                </div>
+              }
+            </div>
+          </article>
+        }
+      </div>
+    </main>
+
+    @if (getScheduleEntries(rest.schedule).length) {
+      <section class="menu-preview__schedule menu-preview__schedule-footer" aria-label="Horarios">
+        <h2 class="menu-preview__schedule-title">Horarios</h2>
+        <div class="menu-preview__schedule-now">
+          @if (getTodaySchedule(rest.schedule); as today) {
+            <span
+              class="menu-preview__schedule-badge"
+              [class.menu-preview__schedule-badge--open]="today.status === 'open'"
+              [class.menu-preview__schedule-badge--closed]="today.status === 'closed'"
+            >
+              {{ today.status === 'open' ? 'Abierto ahora' : 'Cerrado' }}
+            </span>
+            <span class="menu-preview__schedule-today-text">Hoy {{ today.text }}</span>
+          }
+        </div>
+        <ul class="menu-preview__schedule-list" aria-label="Horario semanal">
+          @for (entry of getScheduleEntries(rest.schedule); track entry.key) {
+            <li
+              class="menu-preview__schedule-row"
+              [class.menu-preview__schedule-row--today]="entry.isToday"
+            >
+              <span class="menu-preview__schedule-day-name">{{ entry.label }}</span>
+              <span class="menu-preview__schedule-day-time">{{ entry.text }}</span>
+            </li>
+          }
+        </ul>
+      </section>
+    }
+  }
+</div>

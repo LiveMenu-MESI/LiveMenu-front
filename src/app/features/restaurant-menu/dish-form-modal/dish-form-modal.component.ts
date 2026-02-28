@@ -1,5 +1,6 @@
 import { Component, input, output, OnInit, inject, signal } from '@angular/core';
 import { ReactiveFormsModule, FormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ModalComponent } from '../../../shared/components/modal/modal.component';
 import { ImageUploadService } from '../../../core/services/image-upload.service';
 import type { DishResponseDto } from '../../../core/models/dish-api.model';
@@ -13,10 +14,12 @@ function priceGreaterThanZero(control: AbstractControl): ValidationErrors | null
   return null;
 }
 
+// Icono de cubiertos/platillo (cuando no hay imagen)
 const CUTLERY_ICON =
-  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 2v7c0 1.1.9 2 2 2h2"/><path d="M21 2v7c0 1.1-.9 2-2 2h-2"/><path d="M8 2v20"/><path d="M16 2v20"/><path d="M3 9h18"/></svg>';
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h2"/><path d="M21 2v7c0 1.1-.9 2-2 2h-2"/><path d="M8 2v20"/><path d="M16 2v20"/><path d="M3 9h18"/></svg>';
+// Icono de subir imagen (en el botón "Subir Imagen")
 const UPLOAD_ICON =
-  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>';
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>';
 
 @Component({
   selector: 'app-dish-form-modal',
@@ -27,6 +30,7 @@ const UPLOAD_ICON =
 })
 export class DishFormModalComponent implements OnInit {
   private readonly imageUploadService = inject(ImageUploadService);
+  private readonly sanitizer = inject(DomSanitizer);
 
   /** Categorías del restaurante para el select */
   categories = input.required<CategoryResponseDto[]>();
@@ -45,8 +49,10 @@ export class DishFormModalComponent implements OnInit {
   uploadError = signal<string | null>(null);
   deleting = signal(false);
 
-  readonly cutleryIcon = CUTLERY_ICON;
-  readonly uploadIcon = UPLOAD_ICON;
+  /** Icono de cubiertos (placeholder cuando no hay imagen). */
+  readonly cutleryIcon: SafeHtml = this.sanitizer.bypassSecurityTrustHtml(CUTLERY_ICON);
+  /** Icono de subir en el botón "Subir Imagen". */
+  readonly uploadIcon: SafeHtml = this.sanitizer.bypassSecurityTrustHtml(UPLOAD_ICON);
 
   constructor(private readonly fb: FormBuilder) {
     this.form = this.fb.nonNullable.group({
