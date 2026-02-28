@@ -19,8 +19,9 @@ RUN npm run build:prod
 # Stage 2: Serve con nginx + HTTPS
 FROM nginx:alpine
 
-# Certificado autofirmado por defecto (el navegador mostrará advertencia). En producción montar certs reales.
-RUN mkdir -p /etc/nginx/ssl && \
+# openssl para generar cert autofirmado; en producción se montan certs reales (Let's Encrypt)
+RUN apk add --no-cache openssl && \
+    mkdir -p /etc/nginx/ssl && \
     openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
       -keyout /etc/nginx/ssl/key.pem -out /etc/nginx/ssl/cert.pem \
       -subj "/CN=livemenu.naing.co"
