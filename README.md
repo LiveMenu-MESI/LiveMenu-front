@@ -68,10 +68,13 @@ Salida en `dist/live-menu-app/browser`.
 ## Docker
 
 ```bash
-docker compose up --build
+docker compose up --build -d
 ```
 
-La app se sirve en http://localhost:4200.
+- **HTTP:** http://localhost:4200  
+- **HTTPS:** https://localhost:4443 (certificado autofirmado; el navegador pedirá aceptar la advertencia)
+
+Por defecto la imagen usa **https://api.naing.co** y **https://livemenu.naing.co**. Para certificados reales (Let's Encrypt), monta `fullchain.pem` y `privkey.pem` en `/etc/nginx/ssl/` (ver comentarios en `docker-compose.yml`).
 
 ## API (Restaurant Management CU-02)
 

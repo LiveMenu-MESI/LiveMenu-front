@@ -1,6 +1,7 @@
-# Despliegue: frontend en https://livemenu.naing.co, API en https://api.naing.co
+# Despliegue: https://livemenu.naing.co con certs en /etc/letsencrypt/live/livemenu.naing.co/
 # Uso: docker compose up --build -d
-# Puerto 4200 en el host (evita conflicto con otro servicio en :80). Para usar :80: docker compose up --build -p 80:80
+# Puertos 4200 y 4443 en el host (80 y 443 suelen estar ocupados por nginx/caddy).
+# Configura tu proxy inverso para reenviar livemenu.naing.co a http://localhost:4200 o https://localhost:4443.
 services:
   frontend:
     build:
@@ -10,8 +11,11 @@ services:
         FRONTEND_URL: ${FRONTEND_URL:-https://livemenu.naing.co}
     ports:
       - "4200:80"
+      - "4443:443"
     restart: unless-stopped
-    # Para otra API en build: API_URL=https://otra-api.ejemplo.com docker compose up --build
+    volumes:
+      - /etc/letsencrypt/live/livemenu.naing.co/fullchain.pem:/etc/nginx/ssl/cert.pem:ro
+      - /etc/letsencrypt/live/livemenu.naing.co/privkey.pem:/etc/nginx/ssl/key.pem:ro
 
   # Ejemplo de backend (descomentar y crear Dockerfile en backend si aplica):
   # backend:
