@@ -11,74 +11,134 @@
   } @else if (menu()) {
     @if (restaurant(); as rest) {
       <header class="public-menu__header">
-        @if (rest.logo) {
-          <img [src]="rest.logo" [alt]="rest.name" class="public-menu__logo" />
-        }
-        <h1 class="public-menu__title">{{ rest.name }}</h1>
-        @if (rest.description) {
-          <p class="public-menu__description">{{ rest.description }}</p>
-        }
-        @if (rest.phone || rest.address) {
-          <div class="public-menu__contact">
-            @if (rest.phone) {
-              <p class="public-menu__phone">📞 {{ rest.phone }}</p>
+        <div class="public-menu__hero">
+          <div class="public-menu__hero-inner">
+            @if (rest.logo) {
+              <img [src]="rest.logo" [alt]="rest.name" class="public-menu__hero-logo" />
+            }
+            <h1 class="public-menu__hero-title">{{ rest.name }}</h1>
+            @if (rest.description) {
+              <p class="public-menu__hero-desc">{{ rest.description }}</p>
             }
             @if (rest.address) {
-              <p class="public-menu__address">📍 {{ rest.address }}</p>
+              <p class="public-menu__hero-address">
+                <span class="public-menu__hero-address-icon" aria-hidden="true">📍</span>
+                {{ rest.address }}
+              </p>
             }
           </div>
-        }
-      </header>
-    }
+        </div>
 
-    <main class="public-menu__content">
-      @for (category of categories(); track category.id) {
-        <section class="public-menu__category">
-          <h2 class="public-menu__category-title">{{ category.name }}</h2>
-          @if (category.description) {
-            <p class="public-menu__category-description">{{ category.description }}</p>
+        <div class="public-menu__header-bar">
+          <div class="public-menu__header-text">
+            <h2 class="public-menu__title">Menú Digital</h2>
+            <p class="public-menu__subtitle">Explora nuestros deliciosos platos</p>
+          </div>
+        </div>
+
+        <nav class="public-menu__categories" aria-label="Categorías del menú">
+          <button
+            type="button"
+            class="public-menu__category-pill"
+            [class.public-menu__category-pill--active]="!selectedCategoryId()"
+            (click)="selectCategory(null)"
+          >
+            Todos
+          </button>
+          @for (cat of categories(); track cat.id) {
+            <button
+              type="button"
+              class="public-menu__category-pill"
+              [class.public-menu__category-pill--active]="selectedCategoryId() === cat.id"
+              (click)="selectCategory(cat.id)"
+            >
+              {{ cat.name }}
+            </button>
           }
+        </nav>
+      </header>
 
-          <div class="public-menu__dishes">
-            @for (dish of category.dishes; track dish.id) {
-              <article class="public-menu__dish">
+      <main class="public-menu__content">
+        <div class="public-menu__grid">
+          @for (dish of getFilteredDishes(); track dish.id) {
+            <article
+              class="public-menu__dish-card"
+              role="button"
+              tabindex="0"
+              (click)="onDishClick(rest.slug, dish)"
+              (keydown.enter)="onDishClick(rest.slug, dish)"
+              (keydown.space)="onDishClick(rest.slug, dish); $event.preventDefault()"
+            >
+              <div class="public-menu__dish-card-image-wrap">
                 @if (dish.imageUrl) {
-                  <img [src]="dish.imageUrl" [alt]="dish.name" class="public-menu__dish-image" />
+                  <img [src]="dish.imageUrl" [alt]="dish.name" class="public-menu__dish-card-img" />
+                } @else {
+                  <div class="public-menu__dish-card-img-placeholder"></div>
                 }
-                <div class="public-menu__dish-content">
-                  <div class="public-menu__dish-header">
-                    <h3 class="public-menu__dish-name">
-                      {{ dish.name }}
-                      @if (dish.featured) {
-                        <span class="public-menu__dish-featured">⭐</span>
-                      }
-                    </h3>
-                    <div class="public-menu__dish-price">
-                      @if (dish.offerPrice) {
-                        <span class="public-menu__dish-price--old">${{ dish.price.toFixed(2) }}</span>
-                        <span class="public-menu__dish-price--offer">${{ dish.offerPrice.toFixed(2) }}</span>
-                      } @else {
-                        <span>${{ dish.price.toFixed(2) }}</span>
-                      }
-                    </div>
-                  </div>
-                  @if (dish.description) {
-                    <p class="public-menu__dish-description">{{ dish.description }}</p>
-                  }
-                  @if (dish.tags && dish.tags.length > 0) {
-                    <div class="public-menu__dish-tags">
-                      @for (tag of dish.tags; track tag) {
-                        <span class="public-menu__dish-tag">{{ tag }}</span>
-                      }
-                    </div>
+                @if (dish.featured) {
+                  <span class="public-menu__dish-card-popular">Popular</span>
+                }
+              </div>
+              <div class="public-menu__dish-card-body">
+                <h3 class="public-menu__dish-card-name">{{ dish.name }}</h3>
+                @if (dish.description) {
+                  <p class="public-menu__dish-card-description">{{ dish.description }}</p>
+                }
+                <div class="public-menu__dish-card-price">
+                  @if (dish.offerPrice != null) {
+                    <span class="public-menu__dish-card-price-old">${{ dish.price.toFixed(2) }}</span>
+                    <span class="public-menu__dish-card-price-current">${{ dish.offerPrice.toFixed(2) }}</span>
+                  } @else {
+                    <span class="public-menu__dish-card-price-current">${{ dish.price.toFixed(2) }}</span>
                   }
                 </div>
-              </article>
+                @if (dish.tags && dish.tags.length > 0) {
+                  <div class="public-menu__dish-card-tags">
+                    @for (tag of dish.tags; track tag) {
+                      <span class="public-menu__dish-card-tag">{{ tag }}</span>
+                    }
+                  </div>
+                }
+              </div>
+            </article>
+          }
+        </div>
+      </main>
+
+      @if (getScheduleEntries(rest.schedule).length) {
+        <section class="public-menu__schedule-footer" aria-label="Horarios">
+          <div class="public-menu__schedule-card">
+            <div class="public-menu__schedule-card-header">
+              <span class="public-menu__schedule-card-icon" aria-hidden="true">🕐</span>
+              <h2 class="public-menu__schedule-card-title">Horarios</h2>
+            </div>
+            @if (getTodaySchedule(rest.schedule); as today) {
+              <div class="public-menu__schedule-now">
+                <span
+                  class="public-menu__schedule-badge"
+                  [class.public-menu__schedule-badge--open]="today.status === 'open'"
+                  [class.public-menu__schedule-badge--closed]="today.status === 'closed'"
+                >
+                  {{ today.status === 'open' ? 'Abierto ahora' : 'Cerrado' }}
+                </span>
+                <span class="public-menu__schedule-today-text">Hoy {{ today.text }}</span>
+              </div>
             }
+            <ul class="public-menu__schedule-list" aria-label="Horario semanal">
+              @for (entry of getScheduleEntries(rest.schedule); track entry.key) {
+                <li
+                  class="public-menu__schedule-row"
+                  [class.public-menu__schedule-row--today]="entry.isToday"
+                  [attr.aria-label]="entry.label + ': ' + entry.text"
+                >
+                  <span class="public-menu__schedule-day-name">{{ entry.label }}</span>
+                  <span class="public-menu__schedule-day-time">{{ entry.text }}</span>
+                </li>
+              }
+            </ul>
           </div>
         </section>
       }
-    </main>
+    }
   }
 </div>
-

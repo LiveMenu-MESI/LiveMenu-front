@@ -6,6 +6,7 @@ import { RestaurantCardComponent } from '../../shared/components/restaurant-card
 import type { Restaurant } from '../../shared/models/restaurant.model';
 import type { RestaurantResponseDto } from '../../core/models/restaurant-api.model';
 import { RestaurantApiService } from '../../core/services/restaurant-api.service';
+import { getHttpErrorMessage } from '../../core/utils/http-error.utils';
 
 @Component({
   selector: 'app-restaurants',
@@ -59,7 +60,7 @@ export class RestaurantsComponent implements OnInit {
         this.editingRestaurant.set(dto);
         this.showCreateModal.set(true);
       },
-      error: () => this.error.set('No se pudo cargar el restaurante'),
+      error: (err) => this.error.set(getHttpErrorMessage(err, 'No se pudo cargar el restaurante')),
     });
   }
 
@@ -74,12 +75,12 @@ export class RestaurantsComponent implements OnInit {
     if (id) {
       this.api.update(id, body).subscribe({
         next: () => this.loadList(),
-        error: (err) => this.error.set(err?.message ?? 'Error al actualizar'),
+        error: (err) => this.error.set(getHttpErrorMessage(err, 'Error al actualizar')),
       });
     } else {
       this.api.create(body).subscribe({
         next: () => this.loadList(),
-        error: (err) => this.error.set(err?.message ?? 'Error al crear'),
+        error: (err) => this.error.set(getHttpErrorMessage(err, 'Error al crear')),
       });
     }
   }
@@ -88,7 +89,7 @@ export class RestaurantsComponent implements OnInit {
     if (!confirm(`¿Eliminar "${restaurant.name}"?`)) return;
     this.api.delete(restaurant.id).subscribe({
       next: () => this.loadList(),
-      error: (err) => this.error.set(err?.message ?? 'Error al eliminar'),
+      error: (err) => this.error.set(getHttpErrorMessage(err, 'Error al eliminar')),
     });
   }
 

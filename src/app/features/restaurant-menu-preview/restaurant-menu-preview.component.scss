@@ -1,0 +1,405 @@
+// Same Figma style as public menu (internal preview)
+$color-text: #324054;
+$color-text-muted: #71839b;
+$color-primary: #2d68fe;
+$color-border: #e5e7eb;
+$color-bg-content: #f9fafb;
+$color-badge-popular: #ff472e;
+$color-badge-open: #198754;
+$color-badge-closed: #6c757d;
+$radius-card: 10px;
+$radius-dish: 14px;
+$font-heading: 'Arimo', -apple-system, BlinkMacSystemFont, sans-serif;
+
+.menu-preview {
+  min-height: 100%;
+  background: $color-bg-content;
+  font-family: $font-heading;
+
+  &__loading,
+  &__error {
+    text-align: center;
+    padding: 3rem 1rem;
+  }
+
+  &__error {
+    color: #dc3545;
+  }
+
+  &__header {
+    background: #fff;
+    border-bottom: 1px solid $color-border;
+    padding: 24px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  &__header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  &__header-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  &__title {
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 36px;
+    color: $color-text;
+    margin: 0;
+  }
+
+  &__subtitle {
+    font-size: 16px;
+    line-height: 24px;
+    color: $color-text-muted;
+    margin: 0;
+  }
+
+  &__restaurant-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 17px;
+    height: 66px;
+    min-width: 0;
+    background: #fff;
+    border: 1px solid $color-border;
+    border-radius: $radius-card;
+  }
+
+  &__restaurant-card-image,
+  &__restaurant-card-placeholder {
+    width: 40px;
+    height: 40px;
+    border-radius: $radius-card;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: #f3f4f6;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  &__restaurant-card-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
+  }
+
+  &__restaurant-card-name {
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 24px;
+    color: $color-text;
+    margin: 0;
+  }
+
+  &__restaurant-card-desc {
+    font-size: 12px;
+    line-height: 16px;
+    color: $color-text-muted;
+    margin: 0;
+  }
+
+  &__schedule {
+    background: #fff;
+    border: 1px solid $color-border;
+    border-radius: $radius-card;
+    padding: 20px 24px;
+    max-width: 560px;
+  }
+
+  &__schedule-footer {
+    margin: 24px auto 32px;
+    max-width: 560px;
+  }
+
+  &__schedule-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: $color-text;
+    margin: 0 0 12px 0;
+  }
+
+  &__schedule-now {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px dashed $color-border;
+  }
+
+  &__schedule-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 700;
+    &--open {
+      background: $color-badge-open;
+      color: #fff;
+    }
+    &--closed {
+      background: $color-badge-closed;
+      color: #fff;
+    }
+  }
+
+  &__schedule-today-text {
+    font-size: 14px;
+    color: $color-text-muted;
+    font-weight: 500;
+  }
+
+  &__schedule-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  &__schedule-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    background: #f9fafb;
+    border: 1px solid $color-border;
+    &--today {
+      background: rgba(45, 104, 254, 0.08);
+      border-color: $color-primary;
+      font-weight: 600;
+      .menu-preview__schedule-day-time {
+        color: $color-primary;
+      }
+    }
+  }
+
+  &__schedule-day-name {
+    font-size: 14px;
+    color: $color-text;
+    flex-shrink: 0;
+  }
+
+  &__schedule-day-time {
+    font-size: 14px;
+    color: $color-text-muted;
+    text-align: right;
+    word-break: break-word;
+  }
+
+  &__categories {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  &__category-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 46px;
+    padding: 0 17px;
+    border-radius: $radius-card;
+    border: 1px solid $color-border;
+    background: #fff;
+    color: $color-text;
+    font-family: inherit;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+    &:hover {
+      background: #f9fafb;
+    }
+    &--active {
+      background: $color-primary;
+      border-color: $color-primary;
+      color: #fff;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.1);
+      &:hover {
+        background: #2563eb;
+        border-color: #2563eb;
+      }
+    }
+  }
+
+  &__content {
+    padding: 24px 32px 32px;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 24px;
+  }
+
+  &__dish-card {
+    background: #fff;
+    border: 1px solid $color-border;
+    border-radius: $radius-dish;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    transition: box-shadow 0.2s;
+    &:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+  }
+
+  &__dish-card-image-wrap {
+    position: relative;
+    height: 192px;
+    width: 100%;
+    overflow: hidden;
+    background: #f3f4f6;
+  }
+
+  &__dish-card-img,
+  &__dish-card-img-placeholder {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  &__dish-card-img-placeholder {
+    display: block;
+    background: #e5e7eb;
+  }
+
+  &__dish-card-popular {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: $color-badge-popular;
+    color: #fff;
+    font-size: 14px;
+    padding: 4px 12px;
+    border-radius: 999px;
+  }
+
+  &__dish-card-body {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-height: 120px;
+  }
+
+  &__dish-card-name {
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 28px;
+    color: $color-text;
+    margin: 0;
+  }
+
+  &__dish-card-description {
+    font-size: 14px;
+    line-height: 20px;
+    color: $color-text-muted;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  &__dish-card-price {
+    margin-top: auto;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 32px;
+    color: $color-primary;
+  }
+
+  &__dish-card-price-old {
+    font-size: 16px;
+    font-weight: 600;
+    color: $color-text-muted;
+    text-decoration: line-through;
+    margin-right: 8px;
+  }
+
+  &__dish-card-price-current {
+    color: $color-primary;
+  }
+
+  &__dish-card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 4px;
+  }
+
+  &__dish-card-tag {
+    font-size: 12px;
+    color: $color-text-muted;
+    background: #f3f4f6;
+    padding: 4px 10px;
+    border-radius: 999px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .menu-preview__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .menu-preview {
+    &__header {
+      padding: 20px 16px;
+    }
+    &__header-inner {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    &__restaurant-card {
+      width: 100%;
+    }
+    &__title {
+      font-size: 24px;
+      line-height: 30px;
+    }
+    &__subtitle {
+      font-size: 14px;
+    }
+    &__categories {
+      overflow-x: auto;
+      flex-wrap: nowrap;
+      padding-bottom: 4px;
+      -webkit-overflow-scrolling: touch;
+    }
+    &__category-pill {
+      flex-shrink: 0;
+    }
+    &__content {
+      padding: 20px 16px;
+    }
+    &__grid {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+  }
+}

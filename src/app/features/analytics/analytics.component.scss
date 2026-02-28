@@ -13,6 +13,13 @@
     color: #dc3545;
   }
 
+  &__empty {
+    padding: 1rem 0;
+    margin: 0 0 1.5rem 0;
+    color: #6c757d;
+    font-size: 0.9375rem;
+  }
+
   &__header {
     display: flex;
     justify-content: space-between;
@@ -33,6 +40,12 @@
     font-size: 1rem;
     color: #6c757d;
     margin: 0;
+  }
+
+  &__updated {
+    font-size: 0.8125rem;
+    color: #adb5bd;
+    margin: 0.25rem 0 0 0;
   }
 
   &__export-btn {
@@ -122,6 +135,21 @@
   &__list-name {
     font-weight: 500;
     color: #212529;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  &__list-badge {
+    font-size: 0.6875rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 500;
+    &--unavailable {
+      background: #fff3cd;
+      color: #856404;
+    }
   }
 
   &__list-value {
@@ -173,6 +201,13 @@
   &__chart-label {
     font-size: 0.75rem;
     color: #6c757d;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  &__chart-sublabel {
+    font-size: 0.6875rem;
+    color: #adb5bd;
     text-align: center;
     white-space: nowrap;
   }

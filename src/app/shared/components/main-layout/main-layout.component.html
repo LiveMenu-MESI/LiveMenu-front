@@ -1,6 +1,13 @@
 <div class="main-layout">
   <app-sidebar />
-  <main class="main-layout__content">
-    <router-outlet />
-  </main>
+  <div class="main-layout__main">
+    <header class="main-layout__header">
+      <app-admin-header />
+    </header>
+    <main class="main-layout__content">
+      <div class="main-layout__content-inner" [@routeFade]="routeKey">
+        <router-outlet />
+      </div>
+    </main>
+  </div>
 </div>

@@ -49,7 +49,10 @@ export class AuthService {
   }
 
   getRefreshToken(): string | null {
-    return this.refreshToken();
+    if (typeof localStorage === 'undefined') return null;
+    const stored = localStorage.getItem(this.refreshTokenKey);
+    if (stored !== this.refreshToken()) this.refreshToken.set(stored);
+    return stored;
   }
 
   /**
@@ -71,9 +74,7 @@ export class AuthService {
       throw new Error('No refresh token available');
     }
 
-    this.isRefreshing = true;
     const url = `${API_CONSTANTS.BASE_URL}${API_CONSTANTS.API_PREFIX}${API_CONSTANTS.ENDPOINTS.AUTH_REFRESH}`;
-    
     return this.http.post<RefreshTokenResponse>(url, { refresh_token: refreshToken }).pipe(
       tap((response) => {
         this.setToken(response.access_token);

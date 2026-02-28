@@ -1,0 +1,61 @@
+<div class="admin-header">
+  @if (isMenuPreviewRoute()) {
+    <h1 class="admin-header__title">Menú Digital</h1>
+  }
+  <div class="admin-header__right">
+    @if (loading()) {
+      <span class="admin-header__loading">Cargando…</span>
+    } @else if (restaurants().length > 0) {
+      <div class="admin-header__selector-wrap">
+        <button
+          type="button"
+          class="admin-header__selector"
+          [attr.aria-expanded]="dropdownOpen()"
+          aria-haspopup="listbox"
+          aria-label="Seleccionar restaurante"
+          (click)="toggleDropdown()"
+        >
+          @if (currentRestaurant(); as rest) {
+            @if (rest.logo) {
+              <div class="admin-header__selector-logo">
+                <img [src]="rest.logo" [alt]="rest.name" />
+              </div>
+            } @else {
+              <div class="admin-header__selector-placeholder"></div>
+            }
+            <div class="admin-header__selector-info">
+              <span class="admin-header__selector-name">{{ rest.name }}</span>
+              @if (rest.description) {
+                <span class="admin-header__selector-desc">{{ rest.description }}</span>
+              }
+            </div>
+            <span class="admin-header__selector-arrow" aria-hidden="true">▼</span>
+          } @else {
+            <span class="admin-header__selector-placeholder-text">Seleccionar restaurante</span>
+            <span class="admin-header__selector-arrow" aria-hidden="true">▼</span>
+          }
+        </button>
+
+        @if (dropdownOpen()) {
+          <div class="admin-header__dropdown" role="listbox">
+            @for (rest of restaurants(); track rest.id) {
+              <button
+                type="button"
+                class="admin-header__dropdown-item"
+                [class.admin-header__dropdown-item--active]="currentRestaurantId() === rest.id"
+                role="option"
+                (click)="selectRestaurant(rest)"
+              >
+                @if (rest.logo) {
+                  <img [src]="rest.logo" [alt]="rest.name" class="admin-header__dropdown-item-img" />
+                }
+                <span class="admin-header__dropdown-item-name">{{ rest.name }}</span>
+              </button>
+            }
+          </div>
+        }
+      </div>
+
+    }
+  </div>
+</div>

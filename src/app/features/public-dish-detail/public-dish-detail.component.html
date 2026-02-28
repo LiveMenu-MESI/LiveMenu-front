@@ -1,0 +1,51 @@
+<div class="dish-detail">
+  @if (loading()) {
+    <div class="dish-detail__loading">
+      <p>Cargando...</p>
+    </div>
+  } @else if (error()) {
+    <div class="dish-detail__error">
+      <h1>Error</h1>
+      <p>{{ error() }}</p>
+      @if (slug()) {
+        <a [routerLink]="['/m', slug()]" class="dish-detail__back">Ver menú</a>
+      }
+    </div>
+  } @else if (dish()) {
+    @let d = dish()!;
+    <div class="dish-detail__card">
+      <div class="dish-detail__image-wrap">
+        @if (d.imageUrl) {
+          <img [src]="d.imageUrl" [alt]="d.name" class="dish-detail__image" />
+        } @else {
+          <div class="dish-detail__image-placeholder"></div>
+        }
+        @if (d.featured) {
+          <span class="dish-detail__badge">Popular</span>
+        }
+      </div>
+      <div class="dish-detail__body">
+        <h1 class="dish-detail__name">{{ d.name }}</h1>
+        @if (d.description) {
+          <p class="dish-detail__description">{{ d.description }}</p>
+        }
+        <div class="dish-detail__price">
+          @if (d.offerPrice != null) {
+            <span class="dish-detail__price-old">${{ d.price.toFixed(2) }}</span>
+            <span class="dish-detail__price-current">${{ d.offerPrice.toFixed(2) }}</span>
+          } @else {
+            <span class="dish-detail__price-current">${{ d.price.toFixed(2) }}</span>
+          }
+        </div>
+        @if (d.tags && d.tags.length > 0) {
+          <div class="dish-detail__tags">
+            @for (tag of d.tags; track tag) {
+              <span class="dish-detail__tag">{{ tag }}</span>
+            }
+          </div>
+        }
+      </div>
+    </div>
+    <a [routerLink]="['/m', slug()]" class="dish-detail__back">← Ver menú completo</a>
+  }
+</div>

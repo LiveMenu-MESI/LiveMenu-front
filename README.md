@@ -9,12 +9,14 @@ Aplicación Angular básica con Docker.
 
 ```
 src/app/
-├── shared/                  # Componentes reutilizables
-│   └── components/
-│       └── layout/         # Header, Footer, MainLayout
+├── core/                   # Guards, interceptors, servicios API, constantes
+├── shared/                 # Componentes reutilizables (layout, sidebar, notification)
 ├── features/               # Vistas (lazy-loaded)
-│   ├── home/
-│   └── about/
+│   ├── auth/               # login, signup, logout
+│   ├── restaurants/       # listado y CRUD restaurantes
+│   ├── restaurant-menu/   # categorías, platos, reorden, QR
+│   ├── public-menu/       # menú público /m/:slug
+│   └── analytics/         # dashboard y export
 ├── app.config.ts
 ├── app.routes.ts
 └── app.component.ts
@@ -35,6 +37,9 @@ Las variables se leen solo del archivo **`.env`** en la raíz. Antes de `npm sta
 ```env
 # URL base del API (sin /api/v1)
 API_URL=https://api.naing.co
+
+# URL del frontend (para enlaces en QR)
+FRONTEND_URL=http://localhost:4200
 
 # UUID de restaurante para el enlace "Acceso directo a menú (pruebas)" (opcional)
 # DEV_RESTAURANT_ID=550e8400-e29b-41d4-a716-446655440000

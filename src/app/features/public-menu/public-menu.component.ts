@@ -1,7 +1,42 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { PublicMenuService, type PublicMenuResponse } from '../../core/services/public-menu.service';
+import { PublicMenuService, type PublicMenuResponse, type PublicMenuDish } from '../../core/services/public-menu.service';
+import { getHttpErrorMessage } from '../../core/utils/http-error.utils';
+
+const SCHEDULE_DAYS: { key: string; label: string; short: string }[] = [
+  { key: 'monday', label: 'Lunes', short: 'L' },
+  { key: 'tuesday', label: 'Martes', short: 'M' },
+  { key: 'wednesday', label: 'Miércoles', short: 'X' },
+  { key: 'thursday', label: 'Jueves', short: 'J' },
+  { key: 'friday', label: 'Viernes', short: 'V' },
+  { key: 'saturday', label: 'Sábado', short: 'S' },
+  { key: 'sunday', label: 'Domingo', short: 'D' },
+];
+
+/** Índice del día actual (0 = Lunes, 6 = Domingo) */
+function getTodayIndex(): number {
+  const d = new Date().getDay(); // 0 = Domingo, 1 = Lunes, ...
+  return d === 0 ? 6 : d - 1;
+}
+
+/** Convierte "09:00" o "9:00" a minutos desde medianoche */
+function timeToMinutes(t: string): number {
+  const [h, m] = t.trim().split(':').map(Number);
+  return (h ?? 0) * 60 + (m ?? 0);
+}
+
+/** True si la hora actual está entre open y close (strings "HH:MM") */
+function isCurrentlyOpen(open?: string, close?: string): boolean {
+  if (!open || !close) return false;
+  const now = new Date();
+  const current = now.getHours() * 60 + now.getMinutes();
+  const openMin = timeToMinutes(open);
+  let closeMin = timeToMinutes(close);
+  if (closeMin < openMin) closeMin += 24 * 60; // cierra después de medianoche
+  const currentDay = current >= 0 && current < 24 * 60 ? current : current + 24 * 60;
+  return currentDay >= openMin && currentDay <= closeMin;
+}
 
 @Component({
   selector: 'app-public-menu',
@@ -12,6 +47,7 @@ import { PublicMenuService, type PublicMenuResponse } from '../../core/services/
 })
 export class PublicMenuComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly publicMenuService = inject(PublicMenuService);
 
   menu = signal<PublicMenuResponse | null>(null);
@@ -41,7 +77,7 @@ export class PublicMenuComponent implements OnInit {
         this.loading.set(false);
       },
       error: (err) => {
-        this.error.set(err.error?.message || 'Error al cargar el menú');
+        this.error.set(getHttpErrorMessage(err, 'Error al cargar el menú'));
         this.loading.set(false);
       },
     });
@@ -50,11 +86,85 @@ export class PublicMenuComponent implements OnInit {
   restaurant = signal<PublicMenuResponse['restaurant'] | null>(null);
   categories = signal<PublicMenuResponse['categories']>([]);
 
+  /** Filtro de categoría: null = Todos, si no id de categoría */
+  selectedCategoryId = signal<string | null>(null);
+
+  /** Índice del día actual para resaltar en la semana */
+  readonly todayIndex = getTodayIndex();
+
+  /** Platos a mostrar en el grid (según categoría seleccionada) */
+  getFilteredDishes(): PublicMenuResponse['categories'][0]['dishes'] {
+    const cats = this.categories();
+    const id = this.selectedCategoryId();
+    if (!id) return cats.flatMap((c) => c.dishes);
+    const cat = cats.find((c) => c.id === id);
+    return cat?.dishes ?? [];
+  }
+
+  selectCategory(categoryId: string | null): void {
+    this.selectedCategoryId.set(categoryId);
+  }
+
+  /**
+   * Navega al detalle del plato (esa página llama GET dish y registra la métrica).
+   */
+  onDishClick(slug: string, dish: PublicMenuDish): void {
+    this.router.navigate(['/m', slug, 'dish', dish.id]);
+  }
+
+  /**
+   * Devuelve los horarios para la vista innovadora: día, texto, si es hoy y si está abierto ahora.
+   */
+  getScheduleEntries(
+    schedule: PublicMenuResponse['restaurant']['schedule'] | undefined
+  ): {
+    key: string;
+    label: string;
+    short: string;
+    text: string;
+    isToday: boolean;
+    isOpenNow: boolean | null;
+  }[] {
+    if (!schedule) return [];
+    return SCHEDULE_DAYS.map(({ key, label, short }, index) => {
+      const day = schedule[key];
+      if (!day) return null;
+      const text = day.closed
+        ? 'Cerrado'
+        : [day.open, day.close].filter(Boolean).join(' – ') || '—';
+      const isToday = index === this.todayIndex;
+      const isOpenNow =
+        isToday && !day.closed && day.open && day.close
+          ? isCurrentlyOpen(day.open, day.close)
+          : null;
+      return { key, label, short, text, isToday, isOpenNow };
+    }).filter(
+      (e): e is NonNullable<typeof e> => e !== null
+    );
+  }
+
+  /** Para el badge de hoy: estado actual y texto del horario */
+  getTodaySchedule(
+    schedule: PublicMenuResponse['restaurant']['schedule'] | undefined
+  ): { status: 'open' | 'closed'; text: string } | null {
+    const entries = this.getScheduleEntries(schedule);
+    const today = entries.find((e) => e.isToday);
+    if (!today) return null;
+    const status =
+      today.isOpenNow === true ? 'open' : ('closed' as 'open' | 'closed');
+    return { status, text: today.text };
+  }
+
   private updateSignals(): void {
     const menuData = this.menu();
     if (menuData) {
       this.restaurant.set(menuData.restaurant);
-      this.categories.set(menuData.categories);
+      // Respetar el orden de categorías definido en el admin (reorder).
+      // Ordenar por position para que el menú público refleje la organización.
+      const sorted = [...menuData.categories].sort(
+        (a, b) => (a.position ?? 0) - (b.position ?? 0)
+      );
+      this.categories.set(sorted);
     } else {
       this.restaurant.set(null);
       this.categories.set([]);

@@ -29,6 +29,11 @@ export const routes: Routes = [
       import('./features/public-menu/public-menu.component').then((m) => m.PublicMenuComponent),
   },
   {
+    path: 'm/:slug/dish/:dishId',
+    loadComponent: () =>
+      import('./features/public-dish-detail/public-dish-detail.component').then((m) => m.PublicDishDetailComponent),
+  },
+  {
     path: '',
     component: MainLayoutComponent,
     canActivate: [authGuard],
@@ -42,6 +47,11 @@ export const routes: Routes = [
         path: 'restaurants',
         loadComponent: () =>
           import('./features/restaurants/restaurants.component').then((m) => m.RestaurantsComponent),
+      },
+      {
+        path: 'restaurants/:restaurantId/menu',
+        loadComponent: () =>
+          import('./features/restaurant-menu-preview/restaurant-menu-preview.component').then((m) => m.RestaurantMenuPreviewComponent),
       },
       {
         path: 'restaurants/:restaurantId',

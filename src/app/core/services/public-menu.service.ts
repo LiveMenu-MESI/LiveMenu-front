@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { getPublicMenuUrl } from '../constants/api.constants';
+import { getPublicMenuUrl, getPublicDishUrl } from '../constants/api.constants';
 
 export interface PublicMenuCategory {
   id: string;
@@ -16,10 +16,12 @@ export interface PublicMenuDish {
   name: string;
   description?: string;
   price: number;
-  offerPrice?: number;
+  offerPrice?: number | null;
   imageUrl?: string;
   tags?: string[];
   featured?: boolean;
+  available?: boolean;
+  position?: number;
 }
 
 export interface PublicMenuResponse {
@@ -48,6 +50,14 @@ export class PublicMenuService {
    */
   getMenuBySlug(slug: string): Observable<PublicMenuResponse> {
     return this.http.get<PublicMenuResponse>(getPublicMenuUrl(slug));
+  }
+
+  /**
+   * Obtiene un plato por slug y dishId (público).
+   * El backend puede registrar una vista/métrica por platillo en esta llamada.
+   */
+  getDishBySlug(slug: string, dishId: string): Observable<PublicMenuDish> {
+    return this.http.get<PublicMenuDish>(getPublicDishUrl(slug, dishId));
   }
 }
 

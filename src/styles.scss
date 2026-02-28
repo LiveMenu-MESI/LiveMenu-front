@@ -1,3 +1,44 @@
+/* ========== Design tokens (usar en componentes con var(--lm-*)) ========== */
+:root {
+  /* Primary */
+  --lm-primary: #0d6efd;
+  --lm-primary-hover: #0b5ed7;
+  --lm-primary-light: #e7f1ff;
+  --lm-primary-focus: rgba(13, 110, 253, 0.25);
+
+  /* Neutrals */
+  --lm-text: #212529;
+  --lm-text-muted: #6c757d;
+  --lm-text-soft: #495057;
+  --lm-border: rgba(0, 0, 0, 0.06);
+  --lm-border-strong: #dee2e6;
+  --lm-bg: #fff;
+  --lm-bg-subtle: #f8f9fa;
+  --lm-bg-page: #eef0f2;
+
+  /* Semantic */
+  --lm-success: #198754;
+  --lm-success-bg: #d1e7dd;
+  --lm-success-text: #0f5132;
+  --lm-error: #dc3545;
+  --lm-error-bg: #f8d7da;
+  --lm-error-text: #721c24;
+  --lm-info: #0dcaf0;
+  --lm-info-bg: #cff4fc;
+  --lm-info-text: #055160;
+
+  /* Layout & components */
+  --lm-radius-sm: 6px;
+  --lm-radius: 8px;
+  --lm-radius-lg: 10px;
+  --lm-shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.08);
+  --lm-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --lm-shadow-lg: 0 4px 24px rgba(0, 0, 0, 0.12);
+
+  /* Typography */
+  --lm-font: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
 /* Global styles */
 * {
   box-sizing: border-box;
@@ -5,6 +46,13 @@
 
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, sans-serif;
-  background: #e8e8e8;
+  font-family: var(--lm-font);
+  background: var(--lm-bg-page);
+  color: var(--lm-text);
+}
+
+/* Focus visible para accesibilidad (teclado) */
+:where(button, a, [tabindex]:not([tabindex="-1"])):focus-visible {
+  outline: 2px solid var(--lm-primary);
+  outline-offset: 2px;
 }

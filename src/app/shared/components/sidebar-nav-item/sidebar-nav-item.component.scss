@@ -3,9 +3,9 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem 0.75rem;
-  border-radius: 6px;
+  border-radius: var(--lm-radius-sm);
   text-decoration: none;
-  color: #495057;
+  color: var(--lm-text-soft);
   font-size: 0.875rem;
   transition: background 0.15s, color 0.15s;
   white-space: nowrap;
@@ -18,8 +18,8 @@
   }
 
   &--active {
-    background: #e7f1ff;
-    color: #0d6efd;
+    background: var(--lm-primary-light);
+    color: var(--lm-primary);
   }
 
   &--no-link {

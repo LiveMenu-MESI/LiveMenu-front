@@ -1,17 +1,31 @@
+// Tokens del diseño Figma (Nuevo Platillo)
+$color-text-primary: #324054;
+$color-text-muted: #71839b;
+$color-border: #e5e7eb;
+$color-primary: #2d68fe;
+$color-bg-placeholder: #eff6ff;
+$radius: 10px;
+$input-height: 42px;
+$label-font-size: 14px;
+$input-font-size: 16px;
+
 .dish-form {
+  font-family: 'Inter', sans-serif;
+
   &__image-section {
     display: flex;
-    gap: 1rem;
-    margin-bottom: 1.25rem;
+    gap: 16px;
+    margin-bottom: 24px;
+    align-items: center;
     flex-wrap: wrap;
   }
 
   &__image-preview {
-    width: 120px;
-    height: 120px;
-    min-width: 120px;
-    background: #e7f1ff;
-    border-radius: 8px;
+    width: 128px;
+    height: 128px;
+    min-width: 128px;
+    background: $color-bg-placeholder;
+    border-radius: $radius;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -27,15 +41,15 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.875rem;
-    border-radius: 8px;
+    font-size: $label-font-size;
+    border-radius: $radius;
     z-index: 1;
   }
 
   &__image-delete {
     position: absolute;
-    top: 0.25rem;
-    right: 0.25rem;
+    top: 4px;
+    right: 4px;
     width: 24px;
     height: 24px;
     background: rgba(220, 53, 69, 0.9);
@@ -59,14 +73,17 @@
   &__image-icon {
     width: 48px;
     height: 48px;
-    color: #0d6efd;
+    color: $color-primary;
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
 
     ::ng-deep svg {
       width: 100%;
       height: 100%;
+      display: block;
+      stroke: currentColor;
     }
   }
 
@@ -79,15 +96,27 @@
   &__image-actions {
     flex: 1;
     min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
   }
 
   &__btn-upload {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
+    gap: 8px;
+    height: $input-height;
+    padding: 0 16px;
+    border: 1px solid $color-border;
+    border-radius: $radius;
+    background: #fff;
+    color: $color-text-primary;
+    font-size: $input-font-size;
+    font-weight: 500;
     cursor: pointer;
     position: relative;
+    width: fit-content;
+    box-sizing: border-box;
 
     &--disabled {
       opacity: 0.6;
@@ -102,45 +131,56 @@
     height: 0;
   }
 
-  &__divider {
-    display: block;
-    text-align: center;
-    color: #6c757d;
-    font-size: 0.875rem;
-    margin: 0.5rem 0;
-  }
-
   &__btn-upload-icon {
     display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: $color-primary;
+
     ::ng-deep svg {
-      width: 1rem;
-      height: 1rem;
+      width: 20px;
+      height: 20px;
+      display: block;
+      stroke: currentColor;
     }
   }
 
-  &__image-url {
-    margin-top: 0.5rem;
+  &__field {
+    margin-bottom: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
   }
 
-  &__field {
-    margin-bottom: 1rem;
+  &__field + &__field,
+  &__row + &__field,
+  &__field + &__row,
+  &__options {
+    margin-top: 16px;
   }
 
   &__label {
     display: block;
-    font-size: 0.9375rem;
+    font-size: $label-font-size;
     font-weight: 500;
-    color: #212529;
-    margin-bottom: 0.25rem;
+    color: $color-text-primary;
   }
 
   &__input {
     width: 100%;
-    padding: 0.5rem 0.75rem;
-    font-size: 0.9375rem;
-    border: 1px solid #dee2e6;
-    border-radius: 6px;
+    height: $input-height;
+    padding: 8px 16px;
+    font-size: $input-font-size;
+    font-family: inherit;
+    border: 1px solid $color-border;
+    border-radius: $radius;
     box-sizing: border-box;
+    color: $color-text-primary;
+
+    &::placeholder {
+      color: rgba(10, 10, 10, 0.5);
+    }
 
     &.ng-invalid.ng-touched,
     &--error {
@@ -148,73 +188,86 @@
     }
   }
 
-  &__error {
-    display: block;
-    font-size: 0.8125rem;
-    color: #dc3545;
-    margin-top: 0.25rem;
-  }
-
   &__select {
     cursor: pointer;
+    appearance: auto;
+  }
+
+  &__error {
+    display: block;
+    font-size: 12px;
+    color: #dc3545;
+    margin-top: 2px;
   }
 
   &__row {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 1rem;
+    gap: 16px;
+    align-items: start;
+  }
+
+  &__row &__field {
+    margin-top: 0;
   }
 
   &__textarea {
     resize: vertical;
-    min-height: 80px;
+    min-height: 90px;
+    height: auto;
+    padding: 8px 16px;
+    line-height: 24px;
   }
 
   &__hint {
-    font-size: 0.8125rem;
-    color: #6c757d;
-    margin-top: 0.25rem;
+    font-size: 12px;
+    color: $color-text-muted;
     display: block;
+    margin-top: 2px;
   }
 
   &__tags-row {
     display: flex;
-    gap: 0.5rem;
+    gap: 8px;
     align-items: center;
-    margin-bottom: 0.5rem;
   }
 
   &__tags-row .dish-form__input {
     flex: 1;
+    min-width: 0;
     margin-bottom: 0;
   }
 
   &__btn-add {
-    padding: 0.5rem 1rem;
-    font-size: 0.9375rem;
+    height: $input-height;
+    padding: 0 16px;
+    font-size: $input-font-size;
     font-weight: 500;
+    font-family: inherit;
     color: #fff;
-    background: #0d6efd;
+    background: $color-primary;
     border: none;
-    border-radius: 6px;
+    border-radius: $radius;
     cursor: pointer;
     flex-shrink: 0;
+    white-space: nowrap;
   }
 
   &__tags-list {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.35rem;
+    gap: 6px;
+    margin-top: 8px;
   }
 
   &__tag {
     display: inline-flex;
     align-items: center;
-    gap: 0.25rem;
-    padding: 0.25rem 0.5rem;
-    font-size: 0.8125rem;
-    background: #e7f1ff;
-    color: #0d6efd;
+    gap: 4px;
+    padding: 4px 8px;
+    font-size: 12px;
+    background: $color-bg-placeholder;
+    color: $color-primary;
     border-radius: 999px;
   }
 
@@ -236,23 +289,25 @@
 
   &__options {
     display: flex;
-    flex-wrap: wrap;
-    gap: 1.5rem;
-    margin-bottom: 1.25rem;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 0;
   }
 
   &__toggle {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 8px;
     cursor: pointer;
-    font-size: 0.9375rem;
-    color: #212529;
+    font-size: $label-font-size;
+    font-weight: 500;
+    color: $color-text-primary;
 
     input {
-      width: 1.125rem;
-      height: 1.125rem;
+      width: 16px;
+      height: 16px;
       cursor: pointer;
+      accent-color: $color-primary;
     }
   }
 
@@ -264,29 +319,36 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-end;
-    gap: 0.75rem;
-    margin-top: 1.25rem;
-    padding-top: 1rem;
-    border-top: 1px solid #eee;
+    gap: 12px;
+    margin-top: 24px;
+    padding-top: 17px;
+    border-top: 1px solid $color-border;
   }
 
   &__btn {
-    padding: 0.5rem 1.25rem;
-    font-size: 0.9375rem;
+    height: 40px;
+    padding: 0 16px;
+    font-size: $input-font-size;
     font-weight: 500;
-    border-radius: 6px;
+    font-family: inherit;
+    border-radius: $radius;
     cursor: pointer;
     border: none;
+    box-sizing: border-box;
 
     &--primary {
-      background: #0d6efd;
+      background: $color-primary;
       color: #fff;
     }
 
     &--secondary {
       background: #fff;
-      color: #495057;
-      border: 1px solid #dee2e6;
+      color: $color-text-muted;
+      border: 1px solid $color-border;
+
+      &:hover {
+        background: #f9fafb;
+      }
     }
   }
 }

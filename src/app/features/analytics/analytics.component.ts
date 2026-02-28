@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { AnalyticsService, type AnalyticsResponse } from '../../core/services/analytics.service';
 import { RestaurantApiService } from '../../core/services/restaurant-api.service';
 import { NotificationService } from '../../core/services/notification.service';
+import { getHttpErrorMessage } from '../../core/utils/http-error.utils';
 import type { RestaurantResponseDto } from '../../core/models/restaurant-api.model';
 
 @Component({
@@ -24,7 +25,6 @@ export class AnalyticsComponent implements OnInit {
   analytics = signal<AnalyticsResponse | null>(null);
   loading = signal(true);
   error = signal<string | null>(null);
-  metrics = signal<AnalyticsResponse['metrics'] | null>(null);
 
   ngOnInit(): void {
     // Obtener restaurantId de query params o del primer restaurante disponible
@@ -36,6 +36,7 @@ export class AnalyticsComponent implements OnInit {
         this.loadAnalytics(id);
       } else {
         // Si no hay restaurantId, cargar el primer restaurante disponible
+        this.loading.set(true);
         this.restaurantApi.list().subscribe({
           next: (restaurants) => {
             if (restaurants.length > 0) {
@@ -49,7 +50,7 @@ export class AnalyticsComponent implements OnInit {
             }
           },
           error: (err) => {
-            this.error.set(err?.message ?? 'Error al cargar restaurantes');
+            this.error.set(getHttpErrorMessage(err, 'Error al cargar restaurantes'));
             this.loading.set(false);
           },
         });
@@ -63,7 +64,8 @@ export class AnalyticsComponent implements OnInit {
         this.restaurant.set(restaurant);
       },
       error: (err) => {
-        this.error.set(err?.message ?? 'Error al cargar restaurante');
+        this.error.set(getHttpErrorMessage(err, 'Error al cargar restaurante'));
+        this.loading.set(false);
       },
     });
   }
@@ -75,11 +77,10 @@ export class AnalyticsComponent implements OnInit {
     this.analyticsService.getAnalytics(restaurantId).subscribe({
       next: (data) => {
         this.analytics.set(data);
-        this.metrics.set(data.metrics);
         this.loading.set(false);
       },
       error: (err) => {
-        this.error.set(err.error?.message || 'Error al cargar analytics');
+        this.error.set(getHttpErrorMessage(err, 'Error al cargar analytics'));
         this.loading.set(false);
       },
     });
@@ -101,13 +102,13 @@ export class AnalyticsComponent implements OnInit {
         window.URL.revokeObjectURL(url);
         this.notificationService.success('Analytics exportado correctamente');
       },
-      error: (err) => {
-        this.notificationService.error(err.error?.message || 'Error al exportar analytics');
+      error: () => {
+        // El interceptor ya muestra la notificación de error
       },
     });
   }
 
-  getBarHeight(views: number, allDays: Array<{ date: string; views: number }>): number {
+  getBarHeight(views: number, allDays: Array<{ views: number }>): number {
     if (!allDays || allDays.length === 0) return 0;
     const maxViews = Math.max(...allDays.map((d) => d.views));
     if (maxViews === 0) return 0;
@@ -117,6 +118,18 @@ export class AnalyticsComponent implements OnInit {
   formatDate(dateString: string): string {
     const date = new Date(dateString);
     return date.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
+  }
+
+  formatLastUpdated(isoString: string | undefined): string {
+    if (!isoString) return '';
+    const date = new Date(isoString);
+    return date.toLocaleString('es-ES', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
   }
 }
 

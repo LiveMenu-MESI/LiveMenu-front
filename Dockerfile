@@ -1,9 +1,11 @@
 # Stage 1: Build
 FROM node:20-alpine AS build
 
-# Variable de entorno para la URL del API (ej: http://backend:8080)
-ARG API_URL=http://localhost:8080
+# URLs para producción: livemenu.naing.co + api.naing.co (inyectadas en build)
+ARG API_URL=https://api.naing.co
+ARG FRONTEND_URL=https://livemenu.naing.co
 ENV API_URL=${API_URL}
+ENV FRONTEND_URL=${FRONTEND_URL}
 
 WORKDIR /app
 
@@ -11,6 +13,7 @@ COPY package.json package-lock.json ./
 RUN npm ci
 
 COPY . .
+# load-env.js lee process.env.API_URL y FRONTEND_URL y genera config.ts antes de ng build
 RUN npm run build:prod
 
 # Stage 2: Serve con nginx

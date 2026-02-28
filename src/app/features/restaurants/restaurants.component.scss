@@ -11,14 +11,14 @@
   &__error {
     padding: 0.75rem 1rem;
     margin-bottom: 1rem;
-    background: #f8d7da;
-    color: #721c24;
-    border-radius: 6px;
+    background: var(--lm-error-bg);
+    color: var(--lm-error-text);
+    border-radius: var(--lm-radius-sm);
     font-size: 0.9375rem;
   }
 
   &__loading {
-    color: #6c757d;
+    color: var(--lm-text-muted);
     margin: 0;
   }
 
@@ -38,14 +38,18 @@
     font-size: 0.9375rem;
     font-weight: 500;
     color: #fff;
-    background: #0d6efd;
+    background: var(--lm-primary);
     border: none;
-    border-radius: 6px;
+    border-radius: var(--lm-radius-sm);
     cursor: pointer;
-    transition: background 0.15s;
+    transition: background 0.2s, transform 0.1s;
 
     &:hover {
-      background: #0b5ed7;
+      background: var(--lm-primary-hover);
+    }
+
+    &:active {
+      transform: scale(0.98);
     }
   }
 
