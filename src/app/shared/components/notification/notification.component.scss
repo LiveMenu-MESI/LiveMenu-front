@@ -23,21 +23,21 @@
   font-size: 0.9375rem;
 
   &--success {
-    background: #d1e7dd;
-    color: #0f5132;
-    border-left: 4px solid #198754;
+    background: var(--lm-success-bg);
+    color: var(--lm-success-text);
+    border-left: 4px solid var(--lm-success);
   }
 
   &--error {
-    background: #f8d7da;
-    color: #842029;
-    border-left: 4px solid #dc3545;
+    background: var(--lm-error-bg);
+    color: var(--lm-error-text);
+    border-left: 4px solid var(--lm-error);
   }
 
   &--info {
-    background: #cff4fc;
-    color: #055160;
-    border-left: 4px solid #0dcaf0;
+    background: var(--lm-info-bg);
+    color: var(--lm-info-text);
+    border-left: 4px solid var(--lm-info);
   }
 
   &__message {

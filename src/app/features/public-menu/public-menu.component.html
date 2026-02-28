@@ -28,6 +28,34 @@
             }
           </div>
         }
+        @if (getScheduleEntries(rest.schedule).length) {
+          <div class="public-menu__schedule">
+            <div class="public-menu__schedule-now">
+              @if (getTodaySchedule(rest.schedule); as today) {
+                <span
+                  class="public-menu__schedule-badge"
+                  [class.public-menu__schedule-badge--open]="today.status === 'open'"
+                  [class.public-menu__schedule-badge--closed]="today.status === 'closed'"
+                >
+                  {{ today.status === 'open' ? 'Abierto ahora' : 'Cerrado' }}
+                </span>
+                <span class="public-menu__schedule-today-text">Hoy {{ today.text }}</span>
+              }
+            </div>
+            <div class="public-menu__schedule-week" aria-label="Horario semanal">
+              @for (entry of getScheduleEntries(rest.schedule); track entry.key) {
+                <div
+                  class="public-menu__schedule-day-pill"
+                  [class.public-menu__schedule-day-pill--today]="entry.isToday"
+                  [attr.aria-label]="entry.label + ': ' + entry.text"
+                >
+                  <span class="public-menu__schedule-day-letter">{{ entry.short }}</span>
+                  <span class="public-menu__schedule-day-hours">{{ entry.text }}</span>
+                </div>
+              }
+            </div>
+          </div>
+        }
       </header>
     }
 

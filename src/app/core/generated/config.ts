@@ -3,7 +3,7 @@
  */
 export const config = {
   production: false,
-  apiUrl: 'http://api.naing.co:8080',
+  apiUrl: 'http://localhost:8080',
   frontendUrl: 'http://localhost:4200',
   devRestaurantId: undefined,
 };

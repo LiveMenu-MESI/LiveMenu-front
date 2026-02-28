@@ -1,7 +1,7 @@
 .main-layout {
   display: flex;
   min-height: 100vh;
-  background: #fff;
+  background: var(--lm-bg);
   flex-direction: column;
 
   @media (min-width: 769px) {
@@ -12,5 +12,9 @@
     flex: 1;
     min-width: 0;
     overflow: auto;
+  }
+
+  &__content-inner {
+    min-height: 100%;
   }
 }
