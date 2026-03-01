@@ -1,61 +1,94 @@
+# LiveMenu – Frontend (Admin Portal + Vista Pública)
 
+Aplicación Angular para el sistema **LiveMenu**: portal de administración de restaurantes y menús, y vista pública del menú optimizada para móvil (acceso vía QR).
 
+## Contenido de la documentación
 
-# App (Frontend)
+| Documento | Descripción |
+|-----------|-------------|
+| [README.md](README.md) | Este archivo: requisitos, setup y uso local |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Diagramas de arquitectura (sistema completo y contexto frontend) |
+| [docs/API.md](docs/API.md) | Documentación de la API consumida por este frontend |
+| [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | Instrucciones de despliegue (Docker, variables, HTTPS) |
 
-Aplicación Angular básica con Docker.
+---
+
+## Requisitos
+
+- **Node.js** 20+
+- **npm** (o compatible)
+
+El backend LiveMenu (Quarkus + Keycloak + PostgreSQL) debe estar desplegado y accesible; la URL se configura en `.env` (ver más abajo).
+
+---
 
 ## Estructura del proyecto
 
 ```
 src/app/
-├── core/                   # Guards, interceptors, servicios API, constantes
-├── shared/                 # Componentes reutilizables (layout, sidebar, notification)
-├── features/               # Vistas (lazy-loaded)
-│   ├── auth/               # login, signup, logout
-│   ├── restaurants/       # listado y CRUD restaurantes
-│   ├── restaurant-menu/   # categorías, platos, reorden, QR
-│   ├── public-menu/       # menú público /m/:slug
-│   └── analytics/         # dashboard y export
+├── core/                      # Lógica compartida
+│   ├── constants/             # API URLs, endpoints
+│   ├── generated/             # config.ts (generado desde .env)
+│   ├── guards/                # authGuard para rutas protegidas
+│   ├── interceptors/          # auth, error-notification
+│   └── services/              # auth, restaurant, category, dish, public-menu, etc.
+├── shared/                    # Componentes reutilizables
+│   └── components/            # layout, sidebar, modal, notification, qr-display, etc.
+├── features/                  # Vistas (lazy-loaded)
+│   ├── auth/                  # login, signup, logout
+│   ├── restaurants/           # listado y CRUD restaurantes
+│   ├── restaurant-menu/       # categorías, platos, reorden, QR
+│   ├── restaurant-menu-preview/
+│   ├── public-menu/           # menú público /m/:slug
+│   ├── public-dish-detail/
+│   └── analytics/             # dashboard y export
 ├── app.config.ts
 ├── app.routes.ts
 └── app.component.ts
 ```
 
-## Requisitos
+---
 
-- Node.js 20+
-- npm
+## Variables de entorno
 
-## Variables de entorno (.env)
+Las variables se leen **solo** del archivo **`.env`** en la raíz. Antes de `npm start` y `npm run build` se ejecuta `scripts/load-env.js`, que genera `src/app/core/generated/config.ts` a partir de `.env`.
 
-Las variables se leen solo del archivo **`.env`** en la raíz. Antes de `npm start` y `npm run build` se ejecuta `scripts/load-env.js`, que genera `src/app/core/generated/config.ts` a partir de `.env`.
-
-1. Copia la plantilla: `cp .env.example .env`
+1. Copia la plantilla:
+   ```bash
+   cp .env.example .env
+   ```
 2. Edita `.env` con tus valores:
 
 ```env
 # URL base del API (sin /api/v1)
 API_URL=https://api.naing.co
 
-# URL del frontend (para enlaces en QR)
-FRONTEND_URL=http://localhost:4200
+# URL del frontend (para enlaces en QR y correos)
+FRONTEND_URL=https://livemenu.naing.co
 
-# UUID de restaurante para el enlace "Acceso directo a menú (pruebas)" (opcional)
+# Opcional: UUID de restaurante para "Acceso directo a menú (pruebas)"
 # DEV_RESTAURANT_ID=550e8400-e29b-41d4-a716-446655440000
 ```
 
-El archivo `.env` está en `.gitignore`; no se sube al repositorio.
+- El archivo `.env` está en `.gitignore`; no se sube al repositorio.
+- En Docker, `API_URL` y `FRONTEND_URL` se pueden pasar como build-args (ver [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)).
 
-## Desarrollo local
+---
+
+## Setup y desarrollo local
 
 ```bash
 npm install
 cp .env.example .env   # si aún no tienes .env
+# Edita .env con tu API_URL (y FRONTEND_URL si aplica)
 npm start
 ```
 
-Abre http://localhost:4200
+Abre **http://localhost:4200**.
+
+- **Login:** usa las credenciales del backend (Keycloak). Tras el login, el `access_token` se guarda en `localStorage` (`livemenu_access_token`) y se envía en `Authorization: Bearer` en todas las peticiones al API.
+
+---
 
 ## Build
 
@@ -65,6 +98,24 @@ npm run build
 
 Salida en `dist/live-menu-app/browser`.
 
+Para build de producción con variables de entorno de producción:
+
+```bash
+npm run build:prod
+```
+
+(Equivale a `node scripts/load-env.js production && ng build`.)
+
+---
+
+## Tests
+
+```bash
+npm test
+```
+
+---
+
 ## Docker
 
 ```bash
@@ -72,31 +123,27 @@ docker compose up --build -d
 ```
 
 - **HTTP:** http://localhost:4200  
-- **HTTPS:** https://localhost:4443 (certificado autofirmado; el navegador pedirá aceptar la advertencia)
+- **HTTPS:** https://localhost:4443 (certificado autofirmado; el navegador puede mostrar advertencia)
 
-Por defecto la imagen usa **https://api.naing.co** y **https://livemenu.naing.co**. Para certificados reales (Let's Encrypt), monta `fullchain.pem` y `privkey.pem` en `/etc/nginx/ssl/` (ver comentarios en `docker-compose.yml`).
+Por defecto la imagen usa `API_URL` y `FRONTEND_URL` del `.env` o los valores por defecto del `docker-compose.yml`. Para certificados reales (Let's Encrypt), monta los PEM en `/etc/nginx/ssl/` (ver [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)).
 
-## API (Restaurant Management CU-02)
+---
 
-El listado de restaurantes usa el backend según la colección Postman. El **host del API** se configura en **`.env`** con `API_URL`. Si no existe `.env`, se usan los valores por defecto del script.
+## Rutas principales
 
-- **Endpoints:** `GET/POST /api/v1/admin/restaurants`, `GET/PUT/DELETE /api/v1/admin/restaurants/:id`
-- **Docker:** puedes pasar `API_URL` como build-arg o crear un `.env` antes del build
+| Ruta | Descripción |
+|------|-------------|
+| `/login`, `/signup` | Autenticación |
+| `/logout` | Cierre de sesión |
+| `/restaurants` | Listado de restaurantes (protegido) |
+| `/restaurants/:restaurantId` | Gestión de menú (categorías, platos, QR) (protegido) |
+| `/restaurants/:restaurantId/menu` | Vista previa del menú (protegido) |
+| `/analytics` | Analytics (protegido) |
+| `/m/:slug` | **Menú público** (sin auth; acceso por QR) |
+| `/m/:slug/dish/:dishId` | Detalle de plato en vista pública |
 
-Todas las peticiones llevan `Authorization: Bearer <token>`. Para probar:
+---
 
-1. Haz login con `POST /api/v1/auth/login` (email, password).
-2. Guarda el `access_token` de la respuesta en `localStorage` con clave `livemenu_access_token`, o implementa el flujo de login en la app para que `AuthService` lo guarde.
+## Licencia
 
-
-ARQUITECTURA +
-
-<img width="2692" height="2708" alt="image" src="https://github.com/user-attachments/assets/04a634e5-8f27-4b5f-a2e4-f513097439af" />
-
-<img width="4416" height="3280" alt="image" src="https://github.com/user-attachments/assets/24c1b9b0-a152-41fe-9e09-a718b07112e0" />
-
-
-
-
-
-
+Privado / uso interno según política del proyecto.
