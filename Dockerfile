@@ -2,7 +2,7 @@
 FROM node:20-alpine AS build
 
 # URLs para producción: livemenu.naing.co + api.naing.co (inyectadas en build)
-ARG API_URL=https://api.naing.co
+ARG API_URL=https://api.livemenu.naing.co:8444
 ARG FRONTEND_URL=https://livemenu.naing.co
 ENV API_URL=${API_URL}
 ENV FRONTEND_URL=${FRONTEND_URL}
