@@ -213,11 +213,3 @@ Los diagramas están en formato Mermaid y se pueden ver en:
 - **Online:** [mermaid.live](https://mermaid.live)
 
 ---
-
-## Actualización
-
-Actualiza estos diagramas cuando:
-
-- Cambien las rutas o integraciones del frontend con el backend
-- Se añadan nuevos flujos (p. ej. nuevos endpoints o pasos de auth)
-- Se modifique el despliegue del frontend (Docker, dominios, proxy)
