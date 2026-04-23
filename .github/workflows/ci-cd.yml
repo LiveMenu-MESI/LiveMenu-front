@@ -1,0 +1,157 @@
+# CI/CD del Frontend — LiveMenu (Angular + nginx)
+# 1. Build Angular
+# 2. Trivy: escaneo de vulnerabilidades (bloquea en Critical/High)
+# 3. Push a Artifact Registry (solo en main)
+# 4. Deploy a Cloud Run (solo en main)
+#
+# Autenticación: Workload Identity Federation (sin service account keys)
+# Configura en GitHub Secrets:
+#   GCP_PROJECT_ID      — ID del proyecto GCP
+#   GCP_REGION          — Región (ej. us-central1)
+#   WIF_PROVIDER        — output de Terraform: workload_identity_provider
+#   WIF_SERVICE_ACCOUNT — output de Terraform: cicd_service_account
+#   API_URL             — URL del API backend (ej. https://api.livemenu.naing.co)
+#   FRONTEND_URL        — URL del frontend (ej. https://livemenu.naing.co)
+
+name: CI/CD Frontend
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+env:
+  GCP_REGION:     ${{ secrets.GCP_REGION }}
+  GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  IMAGE_NAME:     ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/livemenu/frontend
+
+jobs:
+  # -----------------------------------------------------------------------
+  # 1. Build Angular
+  # -----------------------------------------------------------------------
+  build:
+    name: Build Angular
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configurar Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Build de producción
+        run: npm run build:prod
+        env:
+          API_URL: ${{ secrets.API_URL }}
+          FRONTEND_URL: ${{ secrets.FRONTEND_URL }}
+
+  # -----------------------------------------------------------------------
+  # 2. Docker Build + Trivy + (push + deploy en main)
+  # -----------------------------------------------------------------------
+  docker:
+    name: Docker Build + Trivy Scan
+    runs-on: ubuntu-latest
+    needs: build
+    permissions:
+      contents: read
+      id-token: write
+      security-events: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configurar Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Autenticación en GCP (Workload Identity Federation)
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
+          service_account: ${{ secrets.WIF_SERVICE_ACCOUNT }}
+
+      - name: Configurar gcloud CLI
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Login a Artifact Registry
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+        run: gcloud auth configure-docker ${{ env.GCP_REGION }}-docker.pkg.dev --quiet
+
+      - name: Build imagen Docker
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile
+          push: false
+          tags: |
+            ${{ env.IMAGE_NAME }}:${{ github.sha }}
+            ${{ env.IMAGE_NAME }}:latest
+          load: true
+          build-args: |
+            API_URL=${{ secrets.API_URL }}
+            FRONTEND_URL=${{ secrets.FRONTEND_URL }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # ----------------------------------------------------------------
+      # TRIVY — Escaneo de vulnerabilidades de la imagen nginx/alpine
+      # Bloquea el pipeline en Critical o High
+      # ----------------------------------------------------------------
+      - name: Trivy — Escaneo (tabla)
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ env.IMAGE_NAME }}:${{ github.sha }}
+          format: table
+          exit-code: "0"
+          ignore-unfixed: true
+          vuln-type: "os,library"
+          severity: "CRITICAL,HIGH,MEDIUM"
+
+      - name: Trivy — Bloquear si hay Critical o High
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ env.IMAGE_NAME }}:${{ github.sha }}
+          format: sarif
+          output: trivy-frontend-results.sarif
+          exit-code: "1"
+          ignore-unfixed: true
+          vuln-type: "os,library"
+          severity: "CRITICAL,HIGH"
+
+      - name: Subir resultados Trivy a GitHub Security
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy-frontend-results.sarif
+          category: trivy-frontend
+
+      - name: Push imagen a Artifact Registry
+        if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master') && success()
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile
+          push: true
+          tags: |
+            ${{ env.IMAGE_NAME }}:${{ github.sha }}
+            ${{ env.IMAGE_NAME }}:latest
+          build-args: |
+            API_URL=${{ secrets.API_URL }}
+            FRONTEND_URL=${{ secrets.FRONTEND_URL }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Deploy a Cloud Run
+        if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master') && success()
+        uses: google-github-actions/deploy-cloudrun@v2
+        with:
+          service: livemenu-frontend
+          region: ${{ env.GCP_REGION }}
+          image: ${{ env.IMAGE_NAME }}:${{ github.sha }}

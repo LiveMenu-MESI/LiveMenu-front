@@ -47,6 +47,12 @@
             ],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
+            "allowedCommonJsDependencies": [
+              "qrcode"
+            ],
+            "sassOptions": {
+              "silenceDeprecations": ["legacy-js-api", "import"]
+            },
             "assets": [
               {
                 "glob": "**/*",
