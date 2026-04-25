@@ -23,7 +23,7 @@
           [class.opening-hours__input--error]="scheduleGroup().get(day.key)?.errors?.['requiredSchedule']"
         />
       }
-      @if (scheduleGroup().get(day.key)?.errors?.['requiredSchedule'] && scheduleGroup().get(day.key)?.touched) {
+      @if (scheduleGroup().get(day.key)?.errors?.['requiredSchedule']) {
         <span class="opening-hours__error">Hora de apertura y cierre son obligatorias</span>
       }
     </div>
