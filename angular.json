@@ -50,9 +50,6 @@
             "allowedCommonJsDependencies": [
               "qrcode"
             ],
-            "sassOptions": {
-              "silenceDeprecations": ["legacy-js-api", "import"]
-            },
             "assets": [
               {
                 "glob": "**/*",
