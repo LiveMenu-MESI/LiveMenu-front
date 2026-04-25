@@ -19,6 +19,8 @@ RUN npm run build:prod
 # Stage 2: Serve con nginx — TLS termina en el Load Balancer de GCP
 FROM nginx:alpine
 
+RUN apk upgrade --no-cache
+
 COPY --from=build /app/dist/live-menu-app/browser /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
